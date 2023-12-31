@@ -16,10 +16,10 @@ export default function RootLayout({
   return (
     <>
       <Providers>
-        <div className="container h-full mx-auto">
+        <div className="flex flex-col overflow-hidden bg-gray-700 h-screen">
           <Header />
           {/* <ThemeSwitch /> */}
-          <div className="w-full bg-gray-700 h-screen">{children}</div>
+          <div className="w-full h-full flex flex-col">{children}</div>
         </div>
       </Providers>
     </>

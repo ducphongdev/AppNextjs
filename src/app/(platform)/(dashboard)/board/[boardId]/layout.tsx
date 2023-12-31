@@ -12,9 +12,9 @@ export default function BoardIdLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="relative flex flex-col h-full">
       <BoardBar />
-      <div>{children}</div>
+      <main className="relative pt-3 h-full"> {children}</main>
     </div>
   );
 }
