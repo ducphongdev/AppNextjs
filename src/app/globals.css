@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.accent-green {
+    background: linear-gradient(#4BCE97, #006644);
+}
+
+.boardBar--background {
+    background: #0000003d;
+}
