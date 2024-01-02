@@ -1,4 +1,4 @@
-import { DownIcon } from "@/componens/icons/icons";
+import { DownIcon } from "@/components/icons/icons";
 
 function Workspaces() {
   return (

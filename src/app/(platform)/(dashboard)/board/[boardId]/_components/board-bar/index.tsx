@@ -1,4 +1,5 @@
-import Button from "@/componens/button";
+import { Board } from "@/app/_types/board.type";
+import Button from "@/components/button";
 import {
   BoltIcon,
   DownIcon,
@@ -8,14 +9,16 @@ import {
   StarIcon,
   TwoPeopleIcon,
   UserPlusIcon,
-} from "@/componens/icons/icons";
+} from "@/components/icons/icons";
 
-function BoardBar() {
+function BoardBar({ board }: { board: Board }) {
   return (
     <div className="flex justify-between items-center gap-2 pl-4 py-3 pr-[10px] boardBar--background">
       <span className="flex items-center">
-        <h1>Bảng trello của tôi</h1>
-        <Button className="hover:rounded-full">
+        <h1 className="font-extrabold text-lg text-white">
+          {board?.description}
+        </h1>
+        <Button className="hover:rounded-full hover:scale-110">
           <StarIcon className="w-4" />
         </Button>
         <Button className="hover:rounded-full">
@@ -50,7 +53,10 @@ function BoardBar() {
           </Button>
         </div>
 
-        <Button size="inline" className="p-1 bg-slate-200">
+        <Button
+          size="inline"
+          className="p-2 bg-slate-200 rounded-sm hover:bg-#fff hover:rounded-sm"
+        >
           <UserPlusIcon className="w-5" />
           <span className="font-semibold ml-1">Chia sẻ</span>
         </Button>

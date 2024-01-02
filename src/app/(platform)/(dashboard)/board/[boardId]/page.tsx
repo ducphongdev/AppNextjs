@@ -1,10 +1,11 @@
-import BoardContent from "./_components/boardContent";
+import { mockData } from "@/app/_api/mock-data";
+import BoardContent from "./_components/board-content";
 
 function Board() {
   return (
-    <div className="absolute inset-0 p-4 h-full overflow-x-auto">
-      <BoardContent />
-    </div>
+    <>
+      <BoardContent board={mockData?.board} />
+    </>
   );
 }
 

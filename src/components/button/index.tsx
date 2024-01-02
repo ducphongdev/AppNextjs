@@ -5,11 +5,11 @@ import { cn } from "@/lib/utils";
 import React from "react";
 
 const buttonVariants = cva(
-  "group flex items-center justify-center text-sm font-medium cursor-pointer ring-offset-background transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "group flex items-center justify-center text-sm font-medium cursor-pointer ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "hover:bg-[#A6C5E299] ml-2 rounded-sm",
+        default: "hover:bg-[#A6C5E299] hover:rounded-md ml-2 rounded-full",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
@@ -28,6 +28,7 @@ const buttonVariants = cva(
         lg: "w-6 h-6",
         icon: "h-10 w-10",
         inline: "h-auto px-2 text-sm",
+        full: "w-full  px-2 text-sm",
       },
     },
     defaultVariants: {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import BoardBar from "./_components/boardBar";
+import BoardBar from "./_components/board-bar";
+import { mockData } from "@/app/_api/mock-data";
 
 export const metadata: Metadata = {
   title: "Table",
@@ -13,7 +14,7 @@ export default function BoardIdLayout({
 }) {
   return (
     <div className="relative flex flex-col h-full">
-      <BoardBar />
+      <BoardBar board={mockData?.board} />
       <main className="relative pt-3 h-full"> {children}</main>
     </div>
   );

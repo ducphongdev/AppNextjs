@@ -4,10 +4,10 @@ import {
   PlusIcon,
   QuestionMarkIcon,
   SearchIcon,
-} from "@/componens/icons/icons";
+} from "@/components/icons/icons";
 import Workspaces from "./menus/workspaces";
 import Recent from "./menus/recent";
-import Button from "@/componens/button";
+import Button from "@/components/button";
 
 function Header() {
   return (

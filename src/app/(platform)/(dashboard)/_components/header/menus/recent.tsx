@@ -1,4 +1,4 @@
-import { ArrowRightIcon, DownIcon } from "@/componens/icons/icons";
+import { ArrowRightIcon, DownIcon } from "@/components/icons/icons";
 
 function Recent() {
   return (

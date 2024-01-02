@@ -1,4 +1,4 @@
-import { ClockIcon } from "@/componens/icons/icons";
+import { ClockIcon } from "@/components/icons/icons";
 
 function OrganizationIdPage() {
   return (

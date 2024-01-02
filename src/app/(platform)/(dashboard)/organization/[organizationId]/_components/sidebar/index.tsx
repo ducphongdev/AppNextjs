@@ -1,4 +1,4 @@
-import { DuplicateIcon, HomeIcon, TableIcon } from "@/componens/icons/icons";
+import { DuplicateIcon, HomeIcon, TableIcon } from "@/components/icons/icons";
 
 function Sidebar() {
   return (
