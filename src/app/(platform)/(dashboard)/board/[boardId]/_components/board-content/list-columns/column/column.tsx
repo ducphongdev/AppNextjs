@@ -9,7 +9,7 @@ interface ColumnProps {
 }
 
 function Column({ column }: ColumnProps) {
-  // Sort
+  // Sorts
   const orderCards = mapOrder(
     column?.cards,
     column?.cardOrderIds,

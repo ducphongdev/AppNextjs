@@ -7,7 +7,7 @@ interface ListBoardProps {
 }
 
 function BoardContent({ board }: ListBoardProps) {
-  // Sort
+  // Sorts
   const orderColumns = mapOrder(
     board?.columns,
     board?.columnOrderIds,
