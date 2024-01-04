@@ -15,7 +15,7 @@ export default function BoardIdLayout({
   return (
     <div className="relative flex flex-col h-full">
       <BoardBar board={mockData?.board} />
-      <main className="relative pt-3 h-full"> {children}</main>
+      <div className="relative pt-3 h-full"> {children}</div>
     </div>
   );
 }

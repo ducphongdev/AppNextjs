@@ -1,3 +1,5 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import Button from "@/components/button";
 import { DuplicateIcon, OptionIcon, PlusIcon } from "@/components/icons/icons";
 import ListCards from "./list-cards/list-cards";
@@ -9,6 +11,17 @@ interface ColumnProps {
 }
 
 function Column({ column }: ColumnProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: column?._id,
+      data: { ...column },
+    });
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+  } as React.CSSProperties;
+
   // Sorts
   const orderCards = mapOrder(
     column?.cards,
@@ -16,7 +29,13 @@ function Column({ column }: ColumnProps) {
     "_id"
   ) as Cards[];
   return (
-    <li className="px-[6px] pb-3 h-full w-[272px] shrink-0 select-none">
+    <li
+      className="px-[6px] pb-3 h-full w-[272px] shrink-0 select-none"
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       <div className="flex justify-between max-h-full flex-col w-[272px] rounded-md shadow-md pb-2 bg-[#f1f2f4]">
         {/* Header */}
         <div className="flex justify-between items-center px-2 pt-2 gap-x-2">
