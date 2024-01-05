@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 .accent-green {
-    background: linear-gradient(#4BCE97, #006644);
+  background: linear-gradient(#4bce97, #006644);
 }
 
 .boardBar--background {
-    background: #0000003d;
+  background: #0000003d;
 }
 
 /* Scrollbar CSS */
@@ -26,11 +26,17 @@ html *::-webkit-scrollbar-track {
   background-color: rgba(0, 0, 0, 0);
 }
 
-.ct-scroll::-webkit-scrollbar{
-    height: 8px;
-    background: #091e420f;
+.ct-scroll::-webkit-scrollbar {
+  height: 8px;
+  background: #091e420f;
 }
 
-.ct-scroll::-webkit-scrollbar-thumb{
-    background: #e8e2e2;
+.ct-scroll::-webkit-scrollbar-thumb {
+  background: #e8e2e2;
+}
+
+@layer base {
+  li {
+    @apply list-none;
+  }
 }

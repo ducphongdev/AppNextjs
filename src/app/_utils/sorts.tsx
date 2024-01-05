@@ -1,10 +1,6 @@
-import { Cards, Columns } from "../_types/board.type";
+import { Cards, Columns, Items } from '../_types/board.type';
 
-export const mapOrder = (
-  originalArray: Columns[] | Cards[],
-  orderArray: string[],
-  key: string
-) => {
+export const mapOrder = (originalArray: any, orderArray: string[] | undefined, key: string) => {
   if (!originalArray || !orderArray || !key) return [];
 
   const clonedArray = [...originalArray];

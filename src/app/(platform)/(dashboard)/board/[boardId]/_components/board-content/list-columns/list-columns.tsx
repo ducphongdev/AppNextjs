@@ -1,12 +1,8 @@
-import {
-  arrayMove,
-  SortableContext,
-  horizontalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import Button from "@/components/button";
-import Column from "./column/column";
-import { PlusIcon } from "@/components/icons/icons";
-import { Columns } from "@/app/_types/board.type";
+import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
+import Button from '@/components/button';
+import Column from './column/column';
+import { PlusIcon } from '@/components/icons/icons';
+import { Columns } from '@/app/_types/board.type';
 
 interface ListColumnProps {
   columns: Columns[];
@@ -14,14 +10,9 @@ interface ListColumnProps {
 
 function ListColumns({ columns }: ListColumnProps) {
   return (
-    <SortableContext
-      items={columns?.map((c) => c._id)}
-      strategy={horizontalListSortingStrategy}
-    >
+    <SortableContext items={columns?.map((c) => c._id)} strategy={horizontalListSortingStrategy}>
       <ol className="ct-scroll flex gap-x-2 h-full overflow-x-auto overflow-y-hidden">
-        {columns?.map((column) => (
-          <Column key={column?._id} column={column} />
-        ))}
+        {columns?.map((column) => <Column key={column?._id} column={column} />)}
         <div className="min-w-52 max-w-52 h-fit rounded-md mx-2 bg-[#ffffff3d]">
           <Button className="py-3 ml-0" size="full">
             <PlusIcon className="w-5" />

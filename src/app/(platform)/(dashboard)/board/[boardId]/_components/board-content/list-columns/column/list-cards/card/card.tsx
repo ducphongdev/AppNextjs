@@ -1,17 +1,33 @@
-import { BarsLeftIcon, ClockIcon } from "@/components/icons/icons";
-import { Cards } from "@/app/_types/board.type";
-import Button from "@/components/button";
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+import { BarsLeftIcon, ClockIcon } from '@/components/icons/icons';
+import { Cards } from '@/app/_types/board.type';
+import Button from '@/components/button';
 
 interface CardProps {
-  card: Cards;
+  card: Cards | null;
 }
 
 function Card({ card }: CardProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: card?._id as string,
+    data: { ...card },
+  });
+
+  const style = {
+    touchAction: 'none',
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    border: isDragging ? '1px solid #2ecc71' : undefined,
+    borderRadius: isDragging ? '8px' : undefined,
+  } as React.CSSProperties;
+
   return (
-    <li className="flex pb-2">
+    <li className="flex" ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <div className="w-full rounded-lg cursor-pointer shadow-sm border-2 bg-slate-300 border-transparent hover:border-black">
         {card?.cover && (
-          //   <div className="bg-[url('https://trello-backgrounds.s3.amazonaws.com/SharedBackground/960x641/8da45cd6f02259e58cf77cb0c23b6fb7/photo-1702933018110-883638b70eeb.jpg')] bg-white min-h-40 bg-cover rounded-t-md"></div>
           <div
             className="bg-white min-h-40 bg-cover rounded-t-md"
             style={{ backgroundImage: `url(${card?.cover})` }}
