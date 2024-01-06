@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { mapOrder } from '@/app/_utils/sorts';
 import ListColumns from './list-columns/list-columns';
 import { Board, Cards, Columns, Items } from '@/app/_types/board.type';
@@ -19,11 +19,19 @@ import {
   UniqueIdentifier,
   CollisionDetection,
   closestCenter,
+  pointerWithin,
+  rectIntersection,
+  getFirstCollision,
+  MeasuringStrategy,
+  ClientRect,
+  Active,
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { cloneDeep } from 'lodash';
 import Column from './list-columns/column/column';
 import Card from './list-columns/column/list-cards/card/card';
+import { DroppableContainer, RectMap } from '@dnd-kit/core/dist/store';
+import { Coordinates } from '@dnd-kit/utilities';
 
 interface ListBoardProps {
   board: Board;
@@ -36,6 +44,10 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 
 function BoardContent({ board }: ListBoardProps) {
   const id = useId();
+
+  const lastOverId = useRef<UniqueIdentifier | null>(null);
+  const recentlyMovedToNewContainer = useRef(false);
+
   const [orderColumns, setOrderColumns] = useState<Columns[]>([]);
 
   const [activeDragItemId, setActiveDragItemId] = useState<UniqueIdentifier | null>(null);
@@ -87,19 +99,58 @@ function BoardContent({ board }: ListBoardProps) {
     ) as Columns;
   };
 
-  const collisionDetectionStrategy: CollisionDetection = useCallback(
-    (args) => {
-      if (activeDragItemId) {
+  const collisionDetectionStrategy = useCallback(
+    (args: {
+      active: Active;
+      collisionRect: ClientRect;
+      droppableRects: RectMap;
+      droppableContainers: DroppableContainer[];
+      pointerCoordinates: Coordinates | null;
+    }) => {
+      const isColumn = orderColumns?.filter((column) => column._id === activeDragItemId);
+
+      if (activeDragItemId && isColumn.length) {
         return closestCenter({
           ...args,
-          droppableContainers: args.droppableContainers.filter(
-            (container) => container.id in orderColumns
+          droppableContainers: args.droppableContainers.filter((container) =>
+            orderColumns.some((orderColumn) => container.id === orderColumn._id)
           ),
         });
       }
-      console.log(args);
+
+      // Tìm các điểm giao nhau và va chạm với con trỏ
+      const pointerIntersections = pointerWithin(args);
+
+      const intersections =
+        pointerIntersections.length > 0 ? pointerIntersections : rectIntersection(args);
+
+      let overId = getFirstCollision(intersections, 'id');
+
+      if (overId) {
+        const checkColumn = orderColumns.find((column) => column._id === overId);
+        if (checkColumn) {
+          overId = closestCenter({
+            ...args,
+            droppableContainers: args.droppableContainers.filter(
+              (container) =>
+                container.id !== overId && checkColumn?.cardOrderIds?.includes(container.id)
+            ),
+          })[0]?.id;
+
+          lastOverId.current = overId;
+
+          return [{ id: overId }];
+        }
+      }
+
+      // if (recentlyMovedToNewContainer.current) {
+      //   lastOverId.current = activeDragItemId;
+      // }
+
+      // Nếu overId null thì trả về mảng rỗng - tránh bug crash trang
+      return lastOverId.current ? [{ id: lastOverId.current }] : [];
     },
-    [activeDragItemId]
+    [activeDragItemId, orderColumns]
   );
 
   const handleDragStart = (e: DragStartEvent) => {
@@ -201,6 +252,11 @@ function BoardContent({ board }: ListBoardProps) {
       id={id}
       sensors={sensors}
       collisionDetection={collisionDetectionStrategy}
+      // measuring={{
+      //   droppable: {
+      //     strategy: MeasuringStrategy.Always,
+      //   },
+      // }}
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
       onDragStart={handleDragStart}
