@@ -26,7 +26,12 @@ function Card({ card }: CardProps) {
 
   return (
     <li className="flex" ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <div className="w-full rounded-lg cursor-pointer shadow-sm border-2 bg-slate-300 border-transparent hover:border-black">
+      <div
+        // style={{
+        //   display: `${card?.FE_PlaceholderCard ? 'none' : 'unset'}`,
+        // }}
+        className="w-full h-full rounded-lg cursor-pointer shadow-sm border-2 bg-slate-300 border-transparent hover:border-black"
+      >
         {card?.cover && (
           <div
             className="bg-white min-h-40 bg-cover rounded-t-md"

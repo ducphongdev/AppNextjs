@@ -28,11 +28,12 @@ import {
   closestCorners,
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 import Column from './list-columns/column/column';
 import Card from './list-columns/column/list-cards/card/card';
 import { DroppableContainer, RectMap } from '@dnd-kit/core/dist/store';
 import { Coordinates } from '@dnd-kit/utilities';
+import { generatePlaceholderCard } from '@/app/_utils/fomatter';
 
 interface ListBoardProps {
   board: Board;
@@ -123,6 +124,10 @@ function BoardContent({ board }: ListBoardProps) {
         nextActiveColumns.cards = nextActiveColumns.cards.filter(
           (card) => card._id !== activeDraggingCardId
         );
+
+        if (isEmpty(nextActiveColumns.cards)) {
+          nextActiveColumns.cards = [generatePlaceholderCard(nextActiveColumns)];
+        }
         nextActiveColumns.cardOrderIds = nextActiveColumns.cards.map((card) => card._id);
       }
 
@@ -136,6 +141,8 @@ function BoardContent({ board }: ListBoardProps) {
           ...activeDraggingCardData,
           columnId: nextOverColumns._id,
         } as Cards);
+
+        nextOverColumns.cards = nextOverColumns.cards.filter((card) => !card.FE_PlaceholderCard);
 
         nextOverColumns.cardOrderIds = nextOverColumns.cards.map((card) => card._id);
       }
@@ -173,9 +180,12 @@ function BoardContent({ board }: ListBoardProps) {
       if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
         return closestCorners({ ...args });
       }
+      // console.log('🚀 ~ file: index.tsx:183 ~ args:', args);
 
       // Tìm các điểm giao nhau và va chạm với con trỏ
       const pointerIntersections = pointerWithin(args);
+
+      // console.log('🚀 ~ file: index.tsx:187 ~ pointerIntersections:', pointerIntersections);
 
       if (!pointerIntersections?.length) return;
       // const intersections =
@@ -183,9 +193,13 @@ function BoardContent({ board }: ListBoardProps) {
 
       let overId = getFirstCollision(pointerIntersections, 'id');
 
-      if (overId) {
+      console.log('🚀 ~ file: index.tsx:197 ~ overId:', overId);
+
+      if (overId != null) {
         const checkColumn = orderColumns.find((column) => column._id === overId);
+
         if (checkColumn) {
+          // console.log('🚀 ~ file: index.tsx:200 ~ checkColumn:', checkColumn);
           overId = closestCorners({
             ...args,
             droppableContainers: args.droppableContainers.filter(
@@ -203,7 +217,7 @@ function BoardContent({ board }: ListBoardProps) {
       // Nếu overId null thì trả về mảng rỗng - tránh bug crash trang
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
     },
-    [orderColumns]
+    [orderColumns, activeDragItemType]
   );
 
   const handleDragStart = (e: DragStartEvent) => {
@@ -222,9 +236,9 @@ function BoardContent({ board }: ListBoardProps) {
   const handleDragOver = (e: DragOverEvent) => {
     const { active, over } = e;
 
-    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) return;
-
     if (!active || !over) return;
+
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) return;
 
     const {
       id: activeDraggingCardId,
@@ -255,6 +269,8 @@ function BoardContent({ board }: ListBoardProps) {
     const { active, over } = e;
 
     if (!active || !over) return;
+    // console.log('🚀 ~ file: index.tsx:323 ~ active:', active);
+    // console.log('🚀 ~ file: index.tsx:323 ~ over:', over);
 
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
       const {
@@ -312,7 +328,15 @@ function BoardContent({ board }: ListBoardProps) {
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
       if (active.id !== over?.id) {
         const oldColumnIndex = orderColumns.findIndex((c) => c._id === active.id);
+
+        // console.log('🚀 ~ file: index.tsx:323 ~ oldColumnIndex:', oldColumnIndex);
+
+        // console.log('🚀 ~ file: index.tsx:323 ~ orderColumns:', orderColumns);
         const newColumnIndex = orderColumns.findIndex((c) => c._id === over.id);
+
+        // console.log('🚀 ~ file: index.tsx:330 ~ newColumnIndex:', newColumnIndex);
+
+        // console.log('🚀 ~ file: index.tsx:326 ~ newColumnIndex:', newColumnIndex);
         // Sắp xếp lại Columns ban đầu (use ArrayMove)
         setOrderColumns(arrayMove(orderColumns, oldColumnIndex, newColumnIndex));
       }
@@ -328,7 +352,7 @@ function BoardContent({ board }: ListBoardProps) {
     <DndContext
       id={id}
       sensors={sensors}
-      collisionDetection={collisionDetectionStrategy}
+      // collisionDetection={collisionDetectionStrategy}
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
       onDragStart={handleDragStart}
