@@ -4,10 +4,10 @@ import {
   PlusIcon,
   QuestionMarkIcon,
   SearchIcon,
-} from "@/components/icons/icons";
-import Workspaces from "./menus/workspaces";
-import Recent from "./menus/recent";
-import Button from "@/components/button";
+} from '@/components/icons/icons';
+import Workspaces from './menus/workspaces';
+import Recent from './menus/recent';
+import Button from '@/components/button';
 
 function Header() {
   return (
@@ -35,7 +35,7 @@ function Header() {
           </span>
           <input
             type="text"
-            className="outline-none border-none text-sm w-full pr-4"
+            className="outline-none border-none text-sm text-black w-full pr-4 bg-transparent"
             placeholder="Tìm kiếm"
           />
         </div>

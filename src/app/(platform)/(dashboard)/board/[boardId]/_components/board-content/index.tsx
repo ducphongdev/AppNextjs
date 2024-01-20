@@ -1,8 +1,8 @@
 'use client';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { mapOrder } from '@/app/_utils/sorts';
+import { mapOrder } from '@/utils/sorts';
 import ListColumns from './list-columns/list-columns';
-import { Board, Cards, Columns, Items } from '@/app/_types/board.type';
+import { Board, Cards, Columns, Items } from '@/types/board.type';
 import {
   DndContext,
   DragEndEvent,
@@ -10,33 +10,28 @@ import {
   DragOverlay,
   DragStartEvent,
   DropAnimation,
-  MouseSensor,
   PointerSensor,
-  TouchSensor,
   defaultDropAnimationSideEffects,
   useSensor,
   useSensors,
   UniqueIdentifier,
-  CollisionDetection,
-  closestCenter,
   pointerWithin,
-  rectIntersection,
   getFirstCollision,
-  MeasuringStrategy,
   ClientRect,
   Active,
   closestCorners,
 } from '@dnd-kit/core';
+import { MouseSensor, TouchSensor } from '@/lib/dndkit-sensor';
 import { arrayMove } from '@dnd-kit/sortable';
 import { cloneDeep, isEmpty } from 'lodash';
 import Column from './list-columns/column/column';
 import Card from './list-columns/column/list-cards/card/card';
 import { DroppableContainer, RectMap } from '@dnd-kit/core/dist/store';
 import { Coordinates } from '@dnd-kit/utilities';
-import { generatePlaceholderCard } from '@/app/_utils/fomatter';
+import { generatePlaceholderCard } from '@/utils/formatter';
 
 interface ListBoardProps {
-  board: Board;
+  board: Board | null;
 }
 
 const ACTIVE_DRAG_ITEM_TYPE = {
@@ -54,10 +49,6 @@ function BoardContent({ board }: ListBoardProps) {
   const [activeDragItemData, setActiveDragItemData] = useState<any>(null);
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState<Columns | null>(null);
 
-  const pointerSensor = useSensor(PointerSensor, {
-    activationConstraint: { distance: 10 },
-  });
-
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
     activationConstraint: {
@@ -73,7 +64,7 @@ function BoardContent({ board }: ListBoardProps) {
     },
   });
 
-  const sensors = useSensors(pointerSensor, mouseSensor, touchSensor);
+  const sensors = useSensors(mouseSensor, touchSensor);
 
   const dropAnimation: DropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
@@ -166,45 +157,27 @@ function BoardContent({ board }: ListBoardProps) {
       droppableContainers: DroppableContainer[];
       pointerCoordinates: Coordinates | null;
     }) => {
-      // const isColumn = orderColumns?.filter((column) => column._id === activeDragItemId);
-
-      // if (activeDragItemId && isColumn.length) {
-      //   return closestCenter({
-      //     ...args,
-      //     droppableContainers: args.droppableContainers.filter((container) =>
-      //       orderColumns.some((orderColumn) => container.id === orderColumn._id)
-      //     ),
-      //   });
-      // }
-
       if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
         return closestCorners({ ...args });
       }
-      // console.log('🚀 ~ file: index.tsx:183 ~ args:', args);
 
       // Tìm các điểm giao nhau và va chạm với con trỏ
       const pointerIntersections = pointerWithin(args);
 
-      // console.log('🚀 ~ file: index.tsx:187 ~ pointerIntersections:', pointerIntersections);
-
       if (!pointerIntersections?.length) return;
-      // const intersections =
-      //   pointerIntersections.length > 0 ? pointerIntersections : rectIntersection(args);
 
       let overId = getFirstCollision(pointerIntersections, 'id');
-
-      console.log('🚀 ~ file: index.tsx:197 ~ overId:', overId);
 
       if (overId != null) {
         const checkColumn = orderColumns.find((column) => column._id === overId);
 
         if (checkColumn) {
-          // console.log('🚀 ~ file: index.tsx:200 ~ checkColumn:', checkColumn);
           overId = closestCorners({
             ...args,
             droppableContainers: args.droppableContainers.filter(
               (container) =>
-                container.id !== overId && checkColumn?.cardOrderIds?.includes(container.id)
+                container.id !== overId &&
+                checkColumn?.cardOrderIds?.includes(container.id as string)
             ),
           })[0]?.id;
 
@@ -269,8 +242,6 @@ function BoardContent({ board }: ListBoardProps) {
     const { active, over } = e;
 
     if (!active || !over) return;
-    // console.log('🚀 ~ file: index.tsx:323 ~ active:', active);
-    // console.log('🚀 ~ file: index.tsx:323 ~ over:', over);
 
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
       const {
@@ -329,14 +300,8 @@ function BoardContent({ board }: ListBoardProps) {
       if (active.id !== over?.id) {
         const oldColumnIndex = orderColumns.findIndex((c) => c._id === active.id);
 
-        // console.log('🚀 ~ file: index.tsx:323 ~ oldColumnIndex:', oldColumnIndex);
-
-        // console.log('🚀 ~ file: index.tsx:323 ~ orderColumns:', orderColumns);
         const newColumnIndex = orderColumns.findIndex((c) => c._id === over.id);
 
-        // console.log('🚀 ~ file: index.tsx:330 ~ newColumnIndex:', newColumnIndex);
-
-        // console.log('🚀 ~ file: index.tsx:326 ~ newColumnIndex:', newColumnIndex);
         // Sắp xếp lại Columns ban đầu (use ArrayMove)
         setOrderColumns(arrayMove(orderColumns, oldColumnIndex, newColumnIndex));
       }
@@ -352,10 +317,10 @@ function BoardContent({ board }: ListBoardProps) {
     <DndContext
       id={id}
       sensors={sensors}
-      // collisionDetection={collisionDetectionStrategy}
-      onDragEnd={handleDragEnd}
-      onDragOver={handleDragOver}
+      collisionDetection={collisionDetectionStrategy}
       onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
     >
       <div className="absolute inset-0 p-4 h-full overflow-x-auto">
         <ListColumns columns={orderColumns} />

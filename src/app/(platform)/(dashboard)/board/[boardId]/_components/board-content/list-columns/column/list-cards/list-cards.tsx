@@ -1,4 +1,4 @@
-import { Cards } from '@/app/_types/board.type';
+import { Cards } from '@/types/board.type';
 import Card from './card/card';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 

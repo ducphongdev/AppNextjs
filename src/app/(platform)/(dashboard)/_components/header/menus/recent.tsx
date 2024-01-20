@@ -1,4 +1,4 @@
-import { ArrowRightIcon, DownIcon } from "@/components/icons/icons";
+import { ArrowRightIcon, DownIcon } from '@/components/icons/icons';
 
 function Recent() {
   return (
@@ -8,7 +8,7 @@ function Recent() {
         <DownIcon className="w-4 h-4 ml-1" />
       </div>
 
-      <div className="hidden group-hover:block absolute top-[44px] left-0 w-[304px]">
+      <div className="hidden group-hover:block absolute top-[44px] left-0 w-[304px] z-50">
         <div className="flex flex-col bg-[#1d2125] rounded-sm shadow-md">
           <div className="after:content-[''] after:block after:w-full after:h-3 after:absolute after:top-[-11px]"></div>
           <ul className="list-none pb-1">

@@ -1,14 +1,10 @@
-import React from "react";
+import React from 'react';
 interface IconProps {
   className: string;
   width?: string;
   height?: string;
 }
-export const AppIcons = ({
-  className,
-  width = "2.4rem",
-  height = "2.4rem",
-}: IconProps) => {
+export const AppIcons = ({ className, width = '2.4rem', height = '2.4rem' }: IconProps) => {
   return (
     <svg
       width={width}
@@ -29,7 +25,7 @@ export const AppIcons = ({
   );
 };
 
-export const DownIcon = ({ className = "w-6 h-6" }: IconProps) => {
+export const DownIcon = ({ className = 'w-6 h-6' }: IconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -39,11 +35,7 @@ export const DownIcon = ({ className = "w-6 h-6" }: IconProps) => {
       stroke="currentColor"
       className={className}
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="m19.5 8.25-7.5 7.5-7.5-7.5"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
     </svg>
   );
 };
@@ -57,11 +49,7 @@ export const ArrowRightIcon = ({ className }: IconProps) => (
     stroke="currentColor"
     className={className}
   >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="m8.25 4.5 7.5 7.5-7.5 7.5"
-    />
+    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
   </svg>
 );
 
@@ -74,11 +62,7 @@ export const PlusIcon = ({ className }: IconProps) => (
     stroke="currentColor"
     className={className}
   >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 4.5v15m7.5-7.5h-15"
-    />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
   </svg>
 );
 
@@ -334,5 +318,18 @@ export const BarsLeftIcon = ({ className }: IconProps) => (
       strokeLinejoin="round"
       d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
     />
+  </svg>
+);
+
+export const CloseIcon = ({ className }: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth="1.5"
+    stroke="currentColor"
+    className={className}
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
   </svg>
 );

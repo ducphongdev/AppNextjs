@@ -1,5 +1,3 @@
-import { Cards, Columns, Items } from '../_types/board.type';
-
 export const mapOrder = (originalArray: any, orderArray: string[] | undefined, key: string) => {
   if (!originalArray || !orderArray || !key) return [];
 

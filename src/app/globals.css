@@ -39,4 +39,8 @@ html *::-webkit-scrollbar-track {
   li {
     @apply list-none;
   }
+
+  span {
+    color: #fff;
+  }
 }

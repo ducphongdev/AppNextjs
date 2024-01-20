@@ -2,7 +2,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 import { BarsLeftIcon, ClockIcon } from '@/components/icons/icons';
-import { Cards } from '@/app/_types/board.type';
+import { Cards } from '@/types/board.type';
 import Button from '@/components/button';
 
 interface CardProps {

@@ -1,5 +1,5 @@
-import { Board } from "@/app/_types/board.type";
-import Button from "@/components/button";
+import { Board } from '@/types/board.type';
+import Button from '@/components/button';
 import {
   BoltIcon,
   DownIcon,
@@ -9,38 +9,36 @@ import {
   StarIcon,
   TwoPeopleIcon,
   UserPlusIcon,
-} from "@/components/icons/icons";
+} from '@/components/icons/icons';
 
 function BoardBar({ board }: { board: Board }) {
   return (
     <div className="flex justify-between items-center gap-2 pl-4 py-3 pr-[10px] boardBar--background">
       <span className="flex items-center">
-        <h1 className="font-extrabold text-lg text-white">
-          {board?.description}
-        </h1>
-        <Button className="hover:rounded-full hover:scale-110">
+        <h1 className="font-extrabold text-lg text-white">{board?.description}</h1>
+        <Button className="hover:scale-110">
           <StarIcon className="w-4" />
         </Button>
-        <Button className="hover:rounded-full">
+        <Button className="">
           <TwoPeopleIcon className="w-4" />
         </Button>
 
-        <Button className="p-1 w-20 bg-slate-200" size="inline">
+        <Button variant="box" size="inline">
           <span className="font-semibold text-slate-700">Bảng</span>
           <DownIcon className="w-5 ml-2 mt-[2px]" />
         </Button>
       </span>
 
       <span className="flex items-center">
-        <Button className="hover:rounded-full">
+        <Button className="">
           <RocketIcon className="w-4" />
         </Button>
 
-        <Button className="hover:rounded-full">
+        <Button className="">
           <BoltIcon className="w-4" />
         </Button>
 
-        <Button size="inline" className="p-2">
+        <Button size="inline" className="p-2 rounded-sm">
           <FilterIcon className="w-4 mx-1" />
           <span className="font-sm text-white ">Bộ lọc</span>
         </Button>
@@ -48,16 +46,13 @@ function BoardBar({ board }: { board: Board }) {
         <span className="w-[1px] h-4 m-1 bg-slate-800"></span>
 
         <div className="flex justify-center items-center">
-          <Button className="hover:rounded-full">
+          <Button className="">
             <span></span>
           </Button>
         </div>
 
-        <Button
-          size="inline"
-          className="p-2 bg-slate-200 rounded-sm hover:bg-#fff hover:rounded-sm"
-        >
-          <UserPlusIcon className="w-5" />
+        <Button size="inline" variant="box">
+          <UserPlusIcon className="w-4" />
           <span className="font-semibold ml-1">Chia sẻ</span>
         </Button>
 
