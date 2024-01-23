@@ -12,3 +12,18 @@ export const fetchBoardById = createAsyncThunk(
     return (await response.json()) as Board;
   }
 );
+
+export const updateBoardDetails = createAsyncThunk(
+  'board/updateBoardDetails',
+  async (infUpdate: any, thunkApi) => {
+    const { boardId, dataUpdate } = infUpdate;
+    const response = await fetch(`${API_ROOT}/v1/boards/${boardId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataUpdate),
+    });
+    return (await response.json()) as Board;
+  }
+);

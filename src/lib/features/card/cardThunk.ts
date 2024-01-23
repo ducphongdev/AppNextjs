@@ -2,6 +2,7 @@ import { API_ROOT } from '@/utils/constants';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { Cards } from '@/types/board.type';
+import { addCardByBoard } from '../board/boardSlice';
 
 export const createNewCard = createAsyncThunk('board/createCard', async (newCardData, thunkApi) => {
   const response = await fetch(`${API_ROOT}/v1/cards`, {
@@ -11,5 +12,7 @@ export const createNewCard = createAsyncThunk('board/createCard', async (newCard
     },
     body: JSON.stringify(newCardData),
   });
-  return (await response.json()) as Cards;
+  const result = (await response.json()) as Cards;
+  thunkApi.dispatch(addCardByBoard(result));
+  return result;
 });

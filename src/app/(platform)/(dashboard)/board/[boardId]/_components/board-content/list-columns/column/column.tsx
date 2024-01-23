@@ -5,7 +5,6 @@ import Button from '@/components/button';
 import { CloseIcon, DuplicateIcon, OptionIcon, PlusIcon } from '@/components/icons/icons';
 import ListCards from './list-cards/list-cards';
 import { Columns } from '@/types/board.type';
-import { mapOrder } from '@/utils/sorts';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
 import { createNewCard } from '@/lib/features/card/cardThunk';
 
@@ -14,6 +13,7 @@ interface ColumnProps {
 }
 
 function Column({ column }: ColumnProps) {
+  const [title, setTitle] = useState<string>('');
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column?._id as string,
     data: { ...column },
@@ -34,16 +34,19 @@ function Column({ column }: ColumnProps) {
   } as React.CSSProperties;
 
   // Sorts
-  const orderCards = mapOrder(column?.cards, column?.cardOrderIds, '_id');
+  const orderCards = column?.cards;
 
-  const createCard = async (formData: FormData) => {
+  const createCard = async () => {
     const addNewCard = {
-      title: formData.get('cardTitle'),
+      title: title,
       columnId: column?._id,
       boardId: board?._id,
     };
 
     dispatch(createNewCard(addNewCard));
+
+    toggleOpenNewCardForm();
+    setTitle('');
   };
 
   return (
@@ -77,8 +80,9 @@ function Column({ column }: ColumnProps) {
               <input
                 className="w-full h-[34px] resize-none rounded-sm p-2 leading-5  font-semibold"
                 data-no-dnd="true"
+                value={title}
                 name="cardTitle"
-                // onChange={handleChangeTextarea}
+                onChange={(e) => setTitle(e.target.value)}
               />
               <div className="flex justify-start items-center w-full mt-2">
                 <Button

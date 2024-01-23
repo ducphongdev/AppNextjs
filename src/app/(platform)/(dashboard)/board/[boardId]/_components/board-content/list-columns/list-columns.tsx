@@ -30,7 +30,6 @@ function ListColumns({ columns }: ListColumnProps) {
       title: formData.get('column'),
       boardId: board?._id,
     };
-
     dispatch(createNewColumn(addNewColumn));
   };
 

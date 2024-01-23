@@ -23,7 +23,9 @@ export const boardSlice = createSlice({
       state.isLoading = true;
     },
 
-    addBoardSuccess: (state) => {},
+    addBoardSuccess: (state, { payload }) => {
+      console.log('payload reducer:', payload);
+    },
     addBoardFailed: (state) => {},
   },
   extraReducers: (builder) => {

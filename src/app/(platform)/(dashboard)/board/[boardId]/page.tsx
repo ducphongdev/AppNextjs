@@ -13,6 +13,8 @@ function Board() {
     dispatch(fetchBoardById('65a350feb801e1fc37938908'));
   }, [dispatch]);
 
+  if (!board) return 'Loading';
+
   return (
     <>
       <BoardContent board={board} />
