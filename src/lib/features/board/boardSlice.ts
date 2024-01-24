@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { fetchBoardById, updateBoardDetails } from './boardThunk';
+import { fetchBoardById, moveCardToDifferentColumn, updateBoardDetails } from './boardThunk';
 import { Board } from '@/types/board.type';
 import { isEmpty } from 'lodash';
 import { generatePlaceholderCard } from '@/utils/formatter';
@@ -29,8 +29,13 @@ export const boardSlice = createSlice({
       const columnToUpdate = newBoard?.columns?.find((column) => column._id === payload.columnId);
 
       if (columnToUpdate) {
-        columnToUpdate.cards.push(payload);
-        columnToUpdate.cardOrderIds.push(payload._id);
+        if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
+          columnToUpdate.cards = [payload];
+          columnToUpdate.cardOrderIds = [payload._id];
+        } else {
+          columnToUpdate.cards.push(payload);
+          columnToUpdate.cardOrderIds.push(payload._id);
+        }
       }
       state.boards = newBoard;
     },
@@ -65,6 +70,13 @@ export const boardSlice = createSlice({
     builder.addCase(updateBoardDetails.pending, (state, action) => {});
     builder.addCase(updateBoardDetails.fulfilled, (state, { payload }) => {});
     builder.addCase(updateBoardDetails.rejected, (state, action) => {});
+
+    // Move Card To Different Column
+    builder.addCase(moveCardToDifferentColumn.pending, (state, action) => {});
+    builder.addCase(moveCardToDifferentColumn.fulfilled, (state, { payload }) => {
+      console.log(payload);
+    });
+    builder.addCase(moveCardToDifferentColumn.rejected, (state, action) => {});
   },
 });
 

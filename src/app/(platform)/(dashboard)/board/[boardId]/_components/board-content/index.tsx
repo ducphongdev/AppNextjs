@@ -28,7 +28,7 @@ import { DroppableContainer, RectMap } from '@dnd-kit/core/dist/store';
 import { Coordinates } from '@dnd-kit/utilities';
 import { generatePlaceholderCard } from '@/utils/formatter';
 import { useAppDispatch } from '@/lib/hooks/useReduxHooks';
-import { updateBoardDetails } from '@/lib/features/board/boardThunk';
+import { moveCardToDifferentColumn, updateBoardDetails } from '@/lib/features/board/boardThunk';
 import { addBoard } from '@/lib/features/board/boardSlice';
 import { updateColumnDetails } from '@/lib/features/column/columnThunk';
 
@@ -90,6 +90,13 @@ function BoardContent({ board }: ListBoardProps) {
     setOrderColumns(mapOrderColumns);
   }, [board]);
 
+  // Tìm Column theo CardId
+  const findColumnByCardId = (cardId: string): Columns => {
+    return orderColumns.find(
+      (column) => column?.cards?.map((card) => card._id)?.includes(cardId)
+    ) as Columns;
+  };
+
   // Func xử lý cập nhật state trong trường hợp kéo Card giữa các Column khác nhau
   const moveCardBetweenDifferentColumns = (
     overColumn: Columns,
@@ -98,7 +105,8 @@ function BoardContent({ board }: ListBoardProps) {
     over: any,
     activeDraggingCardId: UniqueIdentifier,
     activeDraggingCardData: any,
-    activeColumn: Columns
+    activeColumn: Columns,
+    triggerFrom: string
   ) => {
     setOrderColumns((prevColumns) => {
       const overCardIndex = overColumn?.cards?.findIndex((card) => card._id === overCarId);
@@ -147,15 +155,32 @@ function BoardContent({ board }: ListBoardProps) {
         nextOverColumns.cardOrderIds = nextOverColumns.cards.map((card) => card._id);
       }
 
+      if (triggerFrom === 'handleDragEnd') {
+        const dndOrderedColumnsIds = nextColumn.map((c) => c._id);
+        const newBoard = { ...board };
+        newBoard.columns = nextColumn;
+        newBoard.columnOrderIds = dndOrderedColumnsIds;
+        dispatch(addBoard(newBoard));
+
+        let prevCardOrderIds =
+          nextColumn.find((c) => c._id === oldColumnWhenDraggingCard?._id)?.cardOrderIds || [];
+        let nextCardOrderIds = nextColumn.find((c) => c._id === nextOverColumns?._id)?.cardOrderIds;
+        if (prevCardOrderIds[0].includes('placeholder-card')) {
+          prevCardOrderIds = [];
+        }
+        dispatch(
+          moveCardToDifferentColumn({
+            currentCardId: activeDraggingCardId,
+            prevColumnId: oldColumnWhenDraggingCard?._id,
+            prevCardOrderIds,
+            nextColumnId: nextOverColumns?._id,
+            nextCardOrderIds,
+          })
+        );
+      }
+
       return nextColumn;
     });
-  };
-
-  // Tìm Column theo CardId
-  const findColumnByCardId = (cardId: string): Columns => {
-    return orderColumns.find(
-      (column) => column?.cards?.map((card) => card._id)?.includes(cardId)
-    ) as Columns;
   };
 
   // Func gọi API xử lý kéo thả Column
@@ -279,7 +304,8 @@ function BoardContent({ board }: ListBoardProps) {
         over,
         activeDraggingCardId,
         activeDraggingCardData,
-        activeColumn
+        activeColumn,
+        'handleDragOver'
       );
     }
   };
@@ -311,7 +337,8 @@ function BoardContent({ board }: ListBoardProps) {
           over,
           activeDraggingCardId,
           activeDraggingCardData,
-          activeColumn
+          activeColumn,
+          'handleDragEnd'
         );
       } else {
         // Hành đồng kéo thả card trong cùng một Column

@@ -1,6 +1,5 @@
 import { API_ROOT } from '@/utils/constants';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-
 import { Board } from '@/types/board.type';
 
 export const fetchBoardById = createAsyncThunk(
@@ -23,6 +22,20 @@ export const updateBoardDetails = createAsyncThunk(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(dataUpdate),
+    });
+    return (await response.json()) as Board;
+  }
+);
+
+export const moveCardToDifferentColumn = createAsyncThunk(
+  'board/moveCardToDifferentColumn',
+  async (updateData: any, thunkApi) => {
+    const response = await fetch(`${API_ROOT}/v1/boards/supports/moving_card`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updateData),
     });
     return (await response.json()) as Board;
   }
