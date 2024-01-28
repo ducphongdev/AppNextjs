@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { fetchBoardById, moveCardToDifferentColumn, updateBoardDetails } from './boardThunk';
 import { Board } from '@/types/board.type';
 import { isEmpty } from 'lodash';

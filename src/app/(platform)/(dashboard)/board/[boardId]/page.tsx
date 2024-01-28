@@ -1,5 +1,4 @@
 'use client';
-// import { mockData } from '@/app/_api/mock-data';
 import BoardContent from './_components/board-content';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
 import { useEffect } from 'react';
