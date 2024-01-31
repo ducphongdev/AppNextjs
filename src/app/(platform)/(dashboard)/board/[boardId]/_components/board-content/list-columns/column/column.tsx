@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Button from '@/components/button';
-import { CloseIcon, DuplicateIcon, OptionIcon, PlusIcon } from '@/components/icons/icons';
+import {
+  CloseIcon,
+  DuplicateIcon,
+  OptionIcon,
+  PlusIcon,
+} from '@/components/icons';
 import ListCards from './list-cards/list-cards';
 import { Columns } from '@/types/board.type';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
@@ -14,7 +19,14 @@ interface ColumnProps {
 
 function Column({ column }: ColumnProps) {
   const [title, setTitle] = useState<string>('');
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: column?._id as string,
     data: { ...column },
   });
@@ -108,7 +120,10 @@ function Column({ column }: ColumnProps) {
             className="flex justify-between items-center px-2 pt-2"
             onClick={toggleOpenNewCardForm}
           >
-            <Button className="flex-1 justify-start p-1 rounded-md" size="inline">
+            <Button
+              className="flex-1 justify-start p-1 rounded-md"
+              size="inline"
+            >
               <PlusIcon className="w-5" />
               <span className="front-sm ml-2">Thêm thẻ</span>
             </Button>

@@ -1,8 +1,11 @@
-import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import Button from '@/components/button';
 import { ChangeEventHandler, useState } from 'react';
 import Column from './column/column';
-import { CloseIcon, PlusIcon } from '@/components/icons/icons';
+import { CloseIcon, PlusIcon } from '@/components/icons';
 import { Columns } from '@/types/board.type';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
 import { createNewColumn } from '@/lib/features/column/columnThunk';
@@ -21,7 +24,8 @@ function ListColumns({ columns }: ListColumnProps) {
   const dispatch = useAppDispatch();
   const board = useAppSelector((state) => state.board.boards);
 
-  const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm);
+  const toggleOpenNewColumnForm = () =>
+    setOpenNewColumnForm(!openNewColumnForm);
 
   const handleChangeTextarea = (e: React.ChangeEvent<HTMLInputElement>) => {};
 
@@ -34,7 +38,10 @@ function ListColumns({ columns }: ListColumnProps) {
   };
 
   return (
-    <SortableContext items={columns?.map((c) => c._id)} strategy={horizontalListSortingStrategy}>
+    <SortableContext
+      items={columns?.map((c) => c._id)}
+      strategy={horizontalListSortingStrategy}
+    >
       <ol className="ct-scroll flex gap-x-2 h-full overflow-x-auto overflow-y-hidden">
         {columns?.map((column) => <Column key={column?._id} column={column} />)}
         {openNewColumnForm ? (
@@ -70,7 +77,9 @@ function ListColumns({ columns }: ListColumnProps) {
           >
             <Button className="py-3 ml-0  rounded-md w-full" size="inline">
               <PlusIcon className="w-5" />
-              <span className="text-white text-sm ml-2">Thêm danh sách khác</span>
+              <span className="text-white text-sm ml-2">
+                Thêm danh sách khác
+              </span>
             </Button>
           </div>
         )}

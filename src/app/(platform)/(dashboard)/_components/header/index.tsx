@@ -4,7 +4,7 @@ import {
   PlusIcon,
   QuestionMarkIcon,
   SearchIcon,
-} from '@/components/icons/icons';
+} from '@/components/icons';
 import Workspaces from './menus/workspaces';
 import Recent from './menus/recent';
 import Button from '@/components/button';
@@ -47,8 +47,8 @@ function Header() {
           <QuestionMarkIcon className="w-6 text-white group-hover:text-gray-500" />
         </Button>
 
-        <Button className="ml-2 hover:rounded-full">
-          <span></span>
+        <Button className="ml-2 relative hover:rounded-full">
+          <span className=" w-6 h-6 rounded-full bg-[url('https://trello-members.s3.amazonaws.com/6547ad7f62705f885216a986/fa812b6df6d6bccc743f548af429fae2/50.png')] absolute bg-center bg-cover bg-no-repeat "></span>
         </Button>
       </div>
     </div>

@@ -1,30 +1,33 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchBoardById, moveCardToDifferentColumn, updateBoardDetails } from './boardThunk';
-import { Board } from '@/types/board.type';
-import { isEmpty } from 'lodash';
-import { generatePlaceholderCard } from '@/utils/formatter';
-import { mapOrder } from '@/utils/sorts';
+import { AuthState, IUser } from '@/types/board.type';
+import { loginAuth } from './authThunk';
 
-interface BoardState {
-  isLoading: boolean;
-  isError: boolean;
-  boards: Board | null;
-}
-
-const initialState: BoardState = {
+const initialState = {
   isLoading: false,
   isError: false,
-  boards: null,
-};
+  messageError: '',
+  user: {},
+} as AuthState;
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(updateBoardDetails.pending, (state, action) => {});
-    builder.addCase(updateBoardDetails.fulfilled, (state, { payload }) => {});
-    builder.addCase(updateBoardDetails.rejected, (state, action) => {});
+    builder.addCase(loginAuth.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(loginAuth.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.messageError = '';
+      state.user = payload as IUser;
+    });
+    builder.addCase(loginAuth.rejected, (state, action) => {
+      console.log('Login error:', action);
+      state.isError = true;
+      state.messageError = action?.error?.message;
+    });
   },
 });
 

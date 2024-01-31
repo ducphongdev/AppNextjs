@@ -1,5 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchBoardById, moveCardToDifferentColumn, updateBoardDetails } from './boardThunk';
+import {
+  fetchAllBoard,
+  fetchBoardById,
+  moveCardToDifferentColumn,
+  updateBoardDetails,
+} from './boardThunk';
 import { Board } from '@/types/board.type';
 import { isEmpty } from 'lodash';
 import { generatePlaceholderCard } from '@/utils/formatter';
@@ -7,7 +12,7 @@ import { mapOrder } from '@/utils/sorts';
 interface BoardState {
   isLoading: boolean;
   isError: boolean;
-  boards: Board | null;
+  boards: Board[] | Board | null;
 }
 
 const initialState: BoardState = {
@@ -25,7 +30,9 @@ export const boardSlice = createSlice({
     },
     addCardByBoard: (state, { payload }) => {
       const newBoard = { ...state.boards };
-      const columnToUpdate = newBoard?.columns?.find((column) => column._id === payload.columnId);
+      const columnToUpdate = newBoard?.columns?.find(
+        (column) => column._id === payload.columnId
+      );
 
       if (columnToUpdate) {
         if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
@@ -48,10 +55,21 @@ export const boardSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // GET BOARD
+    // GET ALL BOARD
+    builder.addCase(fetchAllBoard.pending, (state, action) => {});
+    builder.addCase(fetchAllBoard.fulfilled, (state, { payload }) => {
+      state.boards = payload;
+    });
+    builder.addCase(fetchAllBoard.rejected, (state, action) => {});
+
+    // GET BOARD DETAILS
     builder.addCase(fetchBoardById.pending, (state, action) => {});
     builder.addCase(fetchBoardById.fulfilled, (state, { payload }) => {
-      payload.columns = mapOrder(payload?.columns, payload?.columnOrderIds, '_id');
+      payload.columns = mapOrder(
+        payload?.columns,
+        payload?.columnOrderIds,
+        '_id'
+      );
 
       payload.columns.forEach((column) => {
         if (isEmpty(column.cards)) {
@@ -72,13 +90,15 @@ export const boardSlice = createSlice({
 
     // Move Card To Different Column
     builder.addCase(moveCardToDifferentColumn.pending, (state, action) => {});
-    builder.addCase(moveCardToDifferentColumn.fulfilled, (state, { payload }) => {
-      console.log(payload);
-    });
+    builder.addCase(
+      moveCardToDifferentColumn.fulfilled,
+      (state, { payload }) => {}
+    );
     builder.addCase(moveCardToDifferentColumn.rejected, (state, action) => {});
   },
 });
 
-export const { addBoard, addCardByBoard, addColumnByBoard } = boardSlice.actions;
+export const { addBoard, addCardByBoard, addColumnByBoard } =
+  boardSlice.actions;
 
 export default boardSlice.reducer;

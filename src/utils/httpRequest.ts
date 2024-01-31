@@ -9,13 +9,13 @@ class HttpRequest {
       baseURL: API_ROOT,
     });
 
-    // this.httpRequest.interceptors.request.use((config: AxiosRequestConfig) => {
-    //   // const accessToken = store?.getState()?.auth?.login?.currentUser?.accessToken;
-    //   if (accessToken && !config.headers) {
-    //     config.headers['Authorization'] = `Bearer ${accessToken}`;
-    //   }
-    //   return config;
-    // });
+    this.httpRequest.interceptors.request.use((config: AxiosRequestConfig) => {
+      // const accessToken = store?.getState()?.auth?.login?.currentUser?.accessToken;
+      // if (accessToken && !config.headers) {
+      //   config.headers['Authorization'] = `Bearer ${accessToken}`;
+      // }
+      return config;
+    });
 
     this.httpRequest.interceptors.response.use(
       (response: AxiosResponse) => response,
@@ -29,11 +29,10 @@ class HttpRequest {
             });
             const responseData = response.data;
             const refreshUser = {
-              ...user,
+              // ...user,
               accessToken: responseData.accessToken,
             };
 
-            dispatch(loginSuccess(refreshUser));
             this.httpRequest.defaults.headers.common['Authorization'] = responseData.accessToken;
             originalRequest.headers['Authorization'] = responseData.accessToken;
 
@@ -106,3 +105,5 @@ class HttpRequest {
     }
   }
 }
+
+export const axiosJWT = new HttpRequest();

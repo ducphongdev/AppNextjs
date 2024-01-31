@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-import { BarsLeftIcon, ClockIcon } from '@/components/icons/icons';
+import { BarsLeftIcon, ClockIcon } from '@/components/icons';
 import { Cards } from '@/types/board.type';
 import Button from '@/components/button';
 
@@ -10,7 +10,14 @@ interface CardProps {
 }
 
 function Card({ card }: CardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: card?._id as string,
     data: { ...card },
   });
@@ -25,7 +32,13 @@ function Card({ card }: CardProps) {
   } as React.CSSProperties;
 
   return (
-    <li className="flex" ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <li
+      className="flex"
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       <div
         // style={{
         //   display: `${card?.FE_PlaceholderCard ? 'none' : 'unset'}`,

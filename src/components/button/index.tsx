@@ -11,12 +11,14 @@ const buttonVariants = cva(
       variant: {
         default: 'hover:bg-[#A6C5E299] ml-2 rounded-full',
         box: ' ml-2 rounded-sm bg-slate-200 px-4 py-1.5',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        outline:
+          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        secondary:
+          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
         primary: 'bg-sky-700 text-primary-foreground hover:bg-sky-700/90',
-        transparent: 'bg-transparent text-white hover:bg-white/20',
+        transparent: 'bg-transparent text-white bg-white/20 hover:bg-white/40',
         gray: 'bg-neutral-200 text-secondary-foreground hover:bg-neutral-300',
       },
       size: {
@@ -41,8 +43,19 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-const Button = ({ className, variant, size, asChild = false, ...props }: ButtonProps) => {
+const Button = ({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ...props
+}: ButtonProps) => {
   const Comp = asChild ? Slot : 'button';
-  return <Comp className={cn(buttonVariants({ variant, size, className }))} {...props} />;
+  return (
+    <Comp
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  );
 };
 export default Button;

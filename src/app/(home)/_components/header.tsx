@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { DownIcon, LogoIcon } from '@/components/icons/icons';
+import { DownIcon, LogoIcon } from '@/components/icons';
 
 function Header() {
   return (

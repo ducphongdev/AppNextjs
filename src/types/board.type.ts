@@ -30,4 +30,18 @@ export interface Board {
   columns: Columns[];
 }
 
+export interface IUser {
+  _id: string;
+  email: string;
+  disPlayName: string;
+  avatar?: string;
+  role: 'client' | 'admin';
+  isActive: boolean;
+}
+export interface AuthState {
+  isLoading: boolean;
+  isError: boolean;
+  messageError: string | undefined;
+  user: {} | IUser;
+}
 export type Items = Columns | Cards;

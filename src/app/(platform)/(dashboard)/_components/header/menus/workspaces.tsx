@@ -1,4 +1,4 @@
-import { DownIcon } from '@/components/icons/icons';
+import { DownIcon } from '@/components/icons';
 
 function Workspaces() {
   return (
@@ -17,7 +17,10 @@ function Workspaces() {
 
           <ul className="list-none pb-1">
             <li className="no-underline">
-              <a href="#" className="flex items-center p-2 mx-3 mb-1 rounded-md cursor-pointer">
+              <a
+                href="#"
+                className="flex items-center p-2 mx-3 mb-1 rounded-md cursor-pointer"
+              >
                 <div className="w-10 h-10 flex items-center">
                   <div className="accent-green flex justify-center items-center w-full h-full text-xl rounded-lg text-neutral-950 font-bold">
                     <span>K</span>

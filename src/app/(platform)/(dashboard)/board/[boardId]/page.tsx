@@ -4,12 +4,14 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
 import { useEffect } from 'react';
 import { fetchBoardById } from '@/lib/features/board/boardThunk';
 
-function Board() {
+function Board({ params }: { params: { boardId: string } }) {
   const dispatch = useAppDispatch();
   const board = useAppSelector((state) => state.board.boards);
 
+  console.log('🚀 ~ board:', board);
+
   useEffect(() => {
-    dispatch(fetchBoardById('65a350feb801e1fc37938908'));
+    dispatch(fetchBoardById(params.boardId));
   }, [dispatch]);
 
   if (!board) return 'Loading';
