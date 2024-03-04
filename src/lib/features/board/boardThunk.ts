@@ -2,10 +2,10 @@ import { API_ROOT } from '@/utils/constants';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Board } from '@/types/board.type';
 
-export const fetchAllBoard = createAsyncThunk(
-  'board/fetchAllBoard',
-  async (_, thunkApi) => {
-    const response = await fetch(`${API_ROOT}/v1/boards/`, {
+export const fetchAllBoardOfUser = createAsyncThunk(
+  'board/fetchAllBoardOfUser',
+  async (userName: string, thunkApi) => {
+    const response = await fetch(`${API_ROOT}/v1/boards/member/${userName}`, {
       method: 'GET',
     });
     return (await response.json()) as Board[];
@@ -17,6 +17,20 @@ export const fetchBoardById = createAsyncThunk(
   async (boardId: string, thunkApi) => {
     const response = await fetch(`${API_ROOT}/v1/boards/${boardId}`, {
       method: 'GET',
+    });
+    return (await response.json()) as Board;
+  }
+);
+
+export const createBoard = createAsyncThunk(
+  'board/createBoard',
+  async (newBoard: any, thunkApi) => {
+    const response = await fetch(`${API_ROOT}/v1/boards`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newBoard),
     });
     return (await response.json()) as Board;
   }

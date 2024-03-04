@@ -24,7 +24,6 @@ export const authSlice = createSlice({
       state.user = payload as IUser;
     });
     builder.addCase(loginAuth.rejected, (state, action) => {
-      console.log('Login error:', action);
       state.isError = true;
       state.messageError = action?.error?.message;
     });

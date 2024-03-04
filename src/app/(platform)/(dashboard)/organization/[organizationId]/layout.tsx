@@ -2,9 +2,11 @@ import Sidebar from './_components/sidebar';
 
 const OrganizationIdLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="grid grid-cols-5 gap-2">
+    <div className="flex items-start justify-center">
       <Sidebar />
-      <div className="col-span-4 mx-4 mt-10 w-full">{children}</div>
+      <div className="max-w-[825px] min-w-[288px] w-full mx-4 mt-10">
+        {children}
+      </div>
     </div>
   );
 };

@@ -69,13 +69,15 @@ function Column({ column }: ColumnProps) {
       {...attributes}
     >
       <div
-        className="flex justify-between max-h-full flex-col w-[272px] rounded-md shadow-md pb-2 bg-[#f1f2f4]"
+        className="flex justify-between max-h-full flex-col w-[272px] rounded-lg shadow-md pb-2 bg-[#f1f2f4] dark:bg-black"
         {...listeners}
       >
         {/* Header */}
         <div className="flex justify-between items-center px-2 pt-2 gap-x-2">
-          <div className="">
-            <h2>{column?.title}</h2>
+          <div>
+            <h2 className="text-gray-800 dark:text-gray-200">
+              {column?.title}
+            </h2>
           </div>
           <Button>
             <OptionIcon className="w-4 text-white" />
@@ -124,8 +126,10 @@ function Column({ column }: ColumnProps) {
               className="flex-1 justify-start p-1 rounded-md"
               size="inline"
             >
-              <PlusIcon className="w-5" />
-              <span className="front-sm ml-2">Thêm thẻ</span>
+              <PlusIcon className="w-5 dark:text-gray-400" />
+              <span className="front-sm ml-2 text-gray-600 dark:text-gray-400">
+                Thêm thẻ
+              </span>
             </Button>
             <Button>
               <DuplicateIcon className="w-5" />

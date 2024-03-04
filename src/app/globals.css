@@ -8,7 +8,13 @@
 
 .boardBar--background {
   background: #0000003d;
+  backdrop-filter: blur(4px);
 }
+
+/* [data-theme='dark'] body {
+  background-color: #1d2125 !important;
+  color: #fff;
+} */
 
 /* Scrollbar CSS */
 html *::-webkit-scrollbar {
@@ -33,6 +39,41 @@ html *::-webkit-scrollbar-track {
 
 .ct-scroll::-webkit-scrollbar-thumb {
   background: #e8e2e2;
+}
+
+.show-modal {
+  display: block;
+}
+
+.active {
+  background-color: #1c2b41 !important;
+}
+
+.opacity-active > div::before {
+  background: #a69e9ea3;
+  position: absolute;
+  bottom: 0;
+  content: '';
+  display: block;
+  left: 0;
+  right: 0;
+  top: 0;
+  border-radius: 3px;
+  z-index: 0;
+}
+
+.active .icon-sidebar {
+  color: #579dff !important;
+}
+
+.active .text-p-name {
+  color: #579dff !important;
+}
+
+.card-item {
+  box-shadow:
+    0px 1px 1px rgba(9, 30, 66, 0.25),
+    0px 0px 1px rgba(9, 30, 66, 0.31);
 }
 
 @layer base {

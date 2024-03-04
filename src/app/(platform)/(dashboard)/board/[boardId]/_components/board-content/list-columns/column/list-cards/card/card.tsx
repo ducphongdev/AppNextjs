@@ -43,7 +43,7 @@ function Card({ card }: CardProps) {
         // style={{
         //   display: `${card?.FE_PlaceholderCard ? 'none' : 'unset'}`,
         // }}
-        className="w-full h-full rounded-lg cursor-pointer shadow-sm border-2 bg-slate-300 border-transparent hover:border-black"
+        className="card-item w-full h-full rounded-lg cursor-pointer border-2 bg-white dark:bg-[#22272b] border-transparent hover:border-black"
       >
         {card?.cover && (
           <div

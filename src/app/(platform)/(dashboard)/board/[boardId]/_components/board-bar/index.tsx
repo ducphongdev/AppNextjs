@@ -11,13 +11,11 @@ import {
   UserPlusIcon,
 } from '@/components/icons';
 
-function BoardBar({ board }: { board: Board }) {
+function BoardBar({ board }: { board: Board | null }) {
   return (
     <div className="flex justify-between items-center gap-2 pl-4 py-3 pr-[10px] boardBar--background">
       <span className="flex items-center">
-        <h1 className="font-extrabold text-lg text-white">
-          {board?.description}
-        </h1>
+        <h1 className="font-extrabold text-lg text-white">{board?.title}</h1>
         <Button className="hover:scale-110">
           <StarIcon className="w-4" />
         </Button>

@@ -2,16 +2,16 @@ function Home() {
   return (
     <>
       <section className="w-full">
-        <div className="w-[960px] mx-auto pt-28 pb-20 px-4 text-center text-md-left">
+        <div className="mx-auto pt-28 pb-20 px-4 text-center text-md-left">
           <div className="items-center grid grid-cols-3">
             <div className="col-span-2 mr-20 text-left">
               <h1 className="text-5xl leading-tight text-black font-semibold mb-1">
                 Trello giúp các nhóm phát triển công việc về phía trước.
               </h1>
               <p className="text-black text-lg mb-2">
-                Cộng tác, quản lý dự án và đạt đến đỉnh cao năng suất mới. Từ các tòa nhà cao tầng
-                đến văn phòng tại nhà, cách nhóm của bạn làm việc là duy nhất—hoàn thành tất cả với
-                Trello.
+                Cộng tác, quản lý dự án và đạt đến đỉnh cao năng suất mới. Từ
+                các tòa nhà cao tầng đến văn phòng tại nhà, cách nhóm của bạn
+                làm việc là duy nhất—hoàn thành tất cả với Trello.
               </p>
               <form action="" className="flex my-7">
                 <div className="pr-2 flex-1">
@@ -42,15 +42,16 @@ function Home() {
       </section>
 
       <section>
-        <div className="w-[960px] mx-auto py-8 px-1">
+        <div className="md:max-w-[1024px] mx-auto py-8 px-1">
           <div className="text-center ml-20 px-4 ">
             <h2 className="font-semibold text-4xl mb-2">
               Đó không chỉ là công việc. Đó là cách làm việc cùng nhau.
             </h2>
             <p className="text-xl mb-4">
-              Bắt đầu với bảng Trello, danh sách và thẻ. Tùy chỉnh và mở rộng với nhiều tính năng
-              hơn khi tinh thần làm việc nhóm của bạn phát triển. Quản lý các dự án, sắp xếp nhiệm
-              vụ và xây dựng tinh thần làm việc nhóm—tất cả ở cùng một nơi.
+              Bắt đầu với bảng Trello, danh sách và thẻ. Tùy chỉnh và mở rộng
+              với nhiều tính năng hơn khi tinh thần làm việc nhóm của bạn phát
+              triển. Quản lý các dự án, sắp xếp nhiệm vụ và xây dựng tinh thần
+              làm việc nhóm—tất cả ở cùng một nơi.
             </p>
             <p className="mb-5">
               <a
@@ -76,8 +77,8 @@ function Home() {
           <div className="text-center">
             <div className="mx-2">
               <p className="text-lg">
-                Tham gia cùng hơn 1.000.000 nhóm trên toàn thế giới đang sử dụng Trello để hoàn
-                thành nhiều việc hơn.
+                Tham gia cùng hơn 1.000.000 nhóm trên toàn thế giới đang sử dụng
+                Trello để hoàn thành nhiều việc hơn.
               </p>
             </div>
           </div>
@@ -85,16 +86,17 @@ function Home() {
       </section>
 
       <section>
-        <div className="w-[960px] mx-auto pt-28 pb-20 px-4 text-center text-md-left">
+        <div className=" mx-auto pt-28 pb-20 px-4 text-center text-md-left">
           <div className="grid grid-cols-2">
             <div className="text-left">
               <h2 className="text-2xl font-semibold mb-2">
                 Các tính năng giúp nhóm của bạn thành công
               </h2>
               <p className="text-lg">
-                Tăng cường hiệu quả làm việc của nhóm có nghĩa là sử dụng một công cụ mạnh (và nhiều
-                đồ ăn nhẹ). Từ các cuộc họp và dự án cho đến các sự kiện và thiết lập mục tiêu, các
-                tính năng trực quan của Trello giúp các nhóm nhanh chóng thiết lập và tùy chỉnh các
+                Tăng cường hiệu quả làm việc của nhóm có nghĩa là sử dụng một
+                công cụ mạnh (và nhiều đồ ăn nhẹ). Từ các cuộc họp và dự án cho
+                đến các sự kiện và thiết lập mục tiêu, các tính năng trực quan
+                của Trello giúp các nhóm nhanh chóng thiết lập và tùy chỉnh các
                 quy trình làm việc cho bất kỳ việc gì.
               </p>
             </div>
@@ -110,12 +112,16 @@ function Home() {
               />
             </div>
             <div className="text-left">
-              <h5 className="text-lg uppercase font-semibold">Chọn trình xem</h5>
-              <h2 className="text-3xl capitalize font-semibold my-2">Bảng mới chỉ là khởi đầu</h2>
+              <h5 className="text-lg uppercase font-semibold">
+                Chọn trình xem
+              </h5>
+              <h2 className="text-3xl capitalize font-semibold my-2">
+                Bảng mới chỉ là khởi đầu
+              </h2>
               <p className="text-lg text-slate-600 mb-3">
-                Danh sách và thẻ là các khối xây dựng để tổ chức công việc trên bảng Trello. Phát
-                triển từ đó với các nhiệm vụ được giao, lịch trình, chỉ số năng suất, lịch và hơn
-                thế nữa.
+                Danh sách và thẻ là các khối xây dựng để tổ chức công việc trên
+                bảng Trello. Phát triển từ đó với các nhiệm vụ được giao, lịch
+                trình, chỉ số năng suất, lịch và hơn thế nữa.
               </p>
               <div>
                 <h3 className="text-xl font-semibold">Tìm hiểu thêm</h3>

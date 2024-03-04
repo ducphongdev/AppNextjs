@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchAllBoard,
+  createBoard,
+  fetchAllBoardOfUser,
   fetchBoardById,
   moveCardToDifferentColumn,
   updateBoardDetails,
@@ -12,12 +13,14 @@ import { mapOrder } from '@/utils/sorts';
 interface BoardState {
   isLoading: boolean;
   isError: boolean;
-  boards: Board[] | Board | null;
+  listBoards: Board[];
+  boards: Board | null;
 }
 
 const initialState: BoardState = {
   isLoading: false,
   isError: false,
+  listBoards: [],
   boards: null,
 };
 
@@ -56,22 +59,28 @@ export const boardSlice = createSlice({
   },
   extraReducers: (builder) => {
     // GET ALL BOARD
-    builder.addCase(fetchAllBoard.pending, (state, action) => {});
-    builder.addCase(fetchAllBoard.fulfilled, (state, { payload }) => {
-      state.boards = payload;
+    builder.addCase(fetchAllBoardOfUser.pending, (state, action) => {
+      state.isLoading = true;
     });
-    builder.addCase(fetchAllBoard.rejected, (state, action) => {});
+    builder.addCase(fetchAllBoardOfUser.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.listBoards = payload;
+    });
+    builder.addCase(fetchAllBoardOfUser.rejected, (state, action) => {});
 
     // GET BOARD DETAILS
-    builder.addCase(fetchBoardById.pending, (state, action) => {});
+    builder.addCase(fetchBoardById.pending, (state, action) => {
+      state.isLoading = true;
+    });
     builder.addCase(fetchBoardById.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
       payload.columns = mapOrder(
         payload?.columns,
         payload?.columnOrderIds,
         '_id'
       );
 
-      payload.columns.forEach((column) => {
+      payload.columns.forEach((column: any) => {
         if (isEmpty(column.cards)) {
           column.cards = [generatePlaceholderCard(column)];
           column.cardOrderIds = [generatePlaceholderCard(column)._id];
@@ -81,7 +90,19 @@ export const boardSlice = createSlice({
       });
       state.boards = payload;
     });
-    builder.addCase(fetchBoardById.rejected, (state, action) => {});
+    builder.addCase(fetchBoardById.rejected, (state, action) => {
+      state.isLoading = false;
+    });
+
+    // Create BOARD
+    builder.addCase(createBoard.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(createBoard.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.listBoards.push(payload);
+    });
+    builder.addCase(createBoard.rejected, (state, action) => {});
 
     // UPDATE BOARD
     builder.addCase(updateBoardDetails.pending, (state, action) => {});

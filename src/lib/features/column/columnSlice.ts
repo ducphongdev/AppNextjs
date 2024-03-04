@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { createNewColumn } from './columnThunk';
 import { Columns } from '@/types/board.type';
 

@@ -4,9 +4,9 @@ import { DownIcon, LogoIcon } from '@/components/icons';
 function Header() {
   return (
     <header className="w-full fixed inset-x-0 top-0">
-      <nav className="w-full bg-white flex justify-between items-center">
-        <a href="" className="p-4">
-          <LogoIcon className="w-200" />
+      <nav className="w-full p-4 bg-white flex justify-between items-center">
+        <a href="/" className="leading-10">
+          <LogoIcon />
         </a>
 
         <div className="flex">

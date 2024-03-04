@@ -24,7 +24,7 @@ function Login() {
       if (payload) {
         setEmail('');
         setPassword('');
-        router.push(`/organization/${payload._id}`);
+        router.push(`/organization/${payload?.displayName}`);
       }
     });
   };

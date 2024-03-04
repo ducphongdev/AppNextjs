@@ -6,3 +6,10 @@ export const fetchBoardDetails = async (boardId: string) => {
   });
   return await res.json();
 };
+
+export const fetchBoardByUser = async () => {
+  const res = await fetch(`${API_ROOT}/v1/boards`, {
+    method: 'GET',
+  });
+  return await res.json();
+};
