@@ -3,7 +3,7 @@ import {
   horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import Button from '@/components/button';
-import { ChangeEventHandler, useState } from 'react';
+import { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import Column from './column/column';
 import { CloseIcon, PlusIcon } from '@/components/icons';
 import { Columns } from '@/types/board.type';
@@ -21,20 +21,28 @@ interface addNewColumnProps {
 
 function ListColumns({ columns }: ListColumnProps) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>('');
   const dispatch = useAppDispatch();
   const board = useAppSelector((state) => state.board.boards);
+  const inputColumnRef = useRef<HTMLInputElement | null>(null);
 
-  const toggleOpenNewColumnForm = () =>
+  const toggleOpenNewColumnForm = () => {
     setOpenNewColumnForm(!openNewColumnForm);
+  };
 
-  const handleChangeTextarea = (e: React.ChangeEvent<HTMLInputElement>) => {};
+  useEffect(() => {
+    if (openNewColumnForm && inputColumnRef.current) {
+      inputColumnRef.current.focus();
+    }
+  }, [openNewColumnForm]);
 
   const createColumn = async (formData: FormData) => {
     const addNewColumn: addNewColumnProps = {
-      title: formData.get('column'),
+      title: title,
       boardId: board?._id,
     };
     dispatch(createNewColumn(addNewColumn));
+    setTitle('');
   };
 
   return (
@@ -45,12 +53,14 @@ function ListColumns({ columns }: ListColumnProps) {
       <ol className="ct-scroll flex gap-x-2 h-full overflow-x-auto overflow-y-hidden">
         {columns?.map((column) => <Column key={column?._id} column={column} />)}
         {openNewColumnForm ? (
-          <div className="w-[272px] h-fit rounded-md mx-2 bg-[#ffffff3d]">
+          <div className="w-[272px] h-fit rounded-md mx-2 bg-[#ffffff3d] px-[6px] pb-3 shrink-0 select-none">
             <form action={createColumn} className="p-2 focus:bg-transparent">
               <input
                 className="w-full h-[34px] resize-none rounded-sm p-2 leading-5 overflow-hidden font-semibold"
                 name="column"
-                onChange={handleChangeTextarea}
+                ref={inputColumnRef}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               ></input>
               <div className="flex justify-start items-center w-fullm mt-2">
                 <Button
@@ -72,7 +82,7 @@ function ListColumns({ columns }: ListColumnProps) {
           </div>
         ) : (
           <div
-            className="w-[272px] h-fit rounded-md mx-2 bg-[#ffffff3d]"
+            className="w-[272px] h-fit rounded-md mx-2 shrink-0 select-none bg-[#ffffff3d]"
             onClick={toggleOpenNewColumnForm}
           >
             <Button className="py-3 ml-0  rounded-md w-full" size="inline">

@@ -40,10 +40,10 @@ function Card({ card }: CardProps) {
       {...listeners}
     >
       <div
-        // style={{
-        //   display: `${card?.FE_PlaceholderCard ? 'none' : 'unset'}`,
-        // }}
         className="card-item w-full h-full rounded-lg cursor-pointer border-2 bg-white dark:bg-[#22272b] border-transparent hover:border-black"
+        style={{
+          display: `${card?.FE_PlaceholderCard ? 'none' : 'unset'}`,
+        }}
       >
         {card?.cover && (
           <div

@@ -1,7 +1,7 @@
 function Home() {
   return (
     <>
-      <section className="w-full">
+      <section className="md:max-w-[1024px] mx-auto">
         <div className="mx-auto pt-28 pb-20 px-4 text-center text-md-left">
           <div className="items-center grid grid-cols-3">
             <div className="col-span-2 mr-20 text-left">
@@ -28,7 +28,7 @@ function Home() {
               </form>
             </div>
 
-            <div className="col-span-1 p-1">
+            <div className="col-span-1 p-1 ml-2 mr-[-8.4%]">
               <img
                 src="https://d2k1ftgv7pobq7.cloudfront.net/meta/p/res/images/spirit/hero/6a3ccd8e5c9a0e8ebea4235d12da6b24/hero.png"
                 alt=""
@@ -86,7 +86,7 @@ function Home() {
       </section>
 
       <section>
-        <div className=" mx-auto pt-28 pb-20 px-4 text-center text-md-left">
+        <div className="md:max-w-[1024px] mx-auto pt-28 pb-20 px-4 text-center text-md-left">
           <div className="grid grid-cols-2">
             <div className="text-left">
               <h2 className="text-2xl font-semibold mb-2">

@@ -17,23 +17,8 @@ const initialState: BoardState = {
 export const boardSlice = createSlice({
   name: 'column',
   initialState,
-  reducers: {
-    addColumnStart: (state) => {
-      state.isLoading = true;
-    },
-
-    addBoardSuccess: (state, { payload }) => {
-      console.log('payload reducer:', payload);
-    },
-    addBoardFailed: (state) => {},
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    // builder.addCase(fetchColumnById.pending, (state) => {
-    // state.isLoading = true;
-    // });
-    // builder.addCase(fetchColumnById.fulfilled, (state, { payload }) => {});
-    // builder.addCase(fetchColumnById.rejected, (state, action) => {});
-
     builder.addCase(createNewColumn.pending, (state) => {
       state.isLoading = true;
     });
@@ -46,6 +31,6 @@ export const boardSlice = createSlice({
   },
 });
 
-export const { addColumnStart } = boardSlice.actions;
+export const {} = boardSlice.actions;
 
 export default boardSlice.reducer;
