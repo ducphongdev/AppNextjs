@@ -6,15 +6,15 @@ import {
   moveCardToDifferentColumn,
   updateBoardDetails,
 } from './boardThunk';
-import { Board } from '@/types/board.type';
+import { IColumn } from '@/types/board.type';
 import { isEmpty } from 'lodash';
 import { generatePlaceholderCard } from '@/utils/formatter';
 import { mapOrder } from '@/utils/sorts';
 interface BoardState {
   isLoading: boolean;
   isError: boolean;
-  listBoards: Board[];
-  boards: Board | null;
+  listBoards: IColumn[];
+  boards: IColumn | null;
 }
 
 const initialState: BoardState = {
@@ -37,6 +37,7 @@ export const boardSlice = createSlice({
         (column) => column._id === payload.columnId
       );
 
+      console.log('🚀 ~ columnToUpdate:', columnToUpdate);
       if (columnToUpdate) {
         if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
           columnToUpdate.cards = [payload];

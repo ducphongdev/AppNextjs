@@ -1,4 +1,4 @@
-import { Cards } from '@/types/board.type';
+import { ICard } from '@/types/board.type';
 import Card from './card/card';
 import {
   SortableContext,
@@ -9,7 +9,7 @@ import { CloseIcon } from '@/components/icons';
 import { useEffect, useRef, useState } from 'react';
 
 interface ListCardsProps {
-  cards: Cards[] | undefined;
+  cards: ICard[] | undefined;
   openNewCardForm: boolean;
   toggleOpenNewCardForm: () => void;
   createCard: (title: string) => void;

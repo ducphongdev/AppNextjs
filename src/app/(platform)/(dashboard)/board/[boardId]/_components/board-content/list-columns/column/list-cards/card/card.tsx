@@ -2,11 +2,14 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 import { BarsLeftIcon, ClockIcon } from '@/components/icons';
-import { Cards } from '@/types/board.type';
+import { ICard } from '@/types/board.type';
 import Button from '@/components/button';
+import { useAppDispatch } from '@/lib/hooks/useReduxHooks';
+import { openModalToolbar } from '@/lib/features/modal/modalSlice';
+import { fetchCardById } from '@/lib/features/card/cardThunk';
 
 interface CardProps {
-  card: Cards | null;
+  card: ICard | null;
 }
 
 function Card({ card }: CardProps) {
@@ -21,6 +24,7 @@ function Card({ card }: CardProps) {
     id: card?._id as string,
     data: { ...card },
   });
+  const dispatch = useAppDispatch();
 
   const style = {
     touchAction: 'none',
@@ -31,6 +35,11 @@ function Card({ card }: CardProps) {
     borderRadius: isDragging ? '8px' : undefined,
   } as React.CSSProperties;
 
+  const handleOpenModalToolbar = (card: ICard | null) => {
+    dispatch(openModalToolbar());
+    dispatch(fetchCardById(card?._id));
+  };
+
   return (
     <li
       className="flex"
@@ -38,6 +47,7 @@ function Card({ card }: CardProps) {
       style={style}
       {...attributes}
       {...listeners}
+      onClick={() => handleOpenModalToolbar(card)}
     >
       <div
         className="card-item w-full h-full rounded-lg cursor-pointer border-2 bg-white dark:bg-[#22272b] border-transparent hover:border-black"

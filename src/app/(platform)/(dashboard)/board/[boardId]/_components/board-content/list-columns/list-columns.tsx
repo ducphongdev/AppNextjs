@@ -6,12 +6,12 @@ import Button from '@/components/button';
 import { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import Column from './column/column';
 import { CloseIcon, PlusIcon } from '@/components/icons';
-import { Columns } from '@/types/board.type';
+import { IColumn } from '@/types/board.type';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
 import { createNewColumn } from '@/lib/features/column/columnThunk';
 
 interface ListColumnProps {
-  columns: Columns[];
+  columns: IColumn[];
 }
 
 interface addNewColumnProps {
@@ -62,7 +62,7 @@ function ListColumns({ columns }: ListColumnProps) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               ></input>
-              <div className="flex justify-start items-center w-fullm mt-2">
+              <div className="flex justify-start items-center w-full mt-2">
                 <Button
                   className="text-sm text-white bg-sky-700 p-2 ml-0 "
                   variant="box"

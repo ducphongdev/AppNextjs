@@ -1,7 +1,7 @@
 import { API_ROOT } from '@/utils/constants';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { Columns } from '@/types/board.type';
+import { IColumn } from '@/types/board.type';
 import { addColumnByBoard } from '../board/boardSlice';
 
 export const createNewColumn = createAsyncThunk(
@@ -14,7 +14,7 @@ export const createNewColumn = createAsyncThunk(
       },
       body: JSON.stringify(newColumnData),
     });
-    const result = (await response.json()) as Columns;
+    const result = (await response.json()) as IColumn;
     thunkApi.dispatch(addColumnByBoard(result));
     return result;
   }
@@ -32,7 +32,7 @@ export const updateColumnDetails = createAsyncThunk(
       },
       body: JSON.stringify({ cardOrderIds }),
     });
-    const result = (await response.json()) as Columns;
+    const result = (await response.json()) as IColumn;
     // thunkApi.dispatch(addColumnByBoard(result));
     return result;
   }

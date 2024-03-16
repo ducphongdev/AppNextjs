@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isOpenModalAddBoard: false,
+  isOpenModalToolbar: false,
+  isOpenModalDate: false,
 };
 
 export const modalSlice = createSlice({
@@ -14,8 +16,27 @@ export const modalSlice = createSlice({
     closeModalAddBoard: (state) => {
       state.isOpenModalAddBoard = false;
     },
+    openModalToolbar: (state) => {
+      state.isOpenModalToolbar = true;
+    },
+    closeModalToolbar: (state) => {
+      state.isOpenModalToolbar = false;
+    },
+    openModalDate: (state) => {
+      state.isOpenModalDate = true;
+    },
+    closeModalDate: (state) => {
+      state.isOpenModalDate = false;
+    },
   },
 });
 
-export const { toggleAddBoard, closeModalAddBoard } = modalSlice.actions;
+export const {
+  toggleAddBoard,
+  closeModalAddBoard,
+  openModalToolbar,
+  closeModalToolbar,
+  openModalDate,
+  closeModalDate,
+} = modalSlice.actions;
 export default modalSlice.reducer;

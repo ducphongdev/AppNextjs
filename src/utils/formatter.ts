@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const generatePlaceholderCard = (column: any) => {
   return {
     _id: `${column._id}-placeholder-card`,
@@ -5,4 +7,9 @@ export const generatePlaceholderCard = (column: any) => {
     columnId: column._id,
     FE_PlaceholderCard: true,
   };
+};
+
+export const convertDate = (date: string, type: string) => {
+  if (!date) return '';
+  return moment(date)?.format(type);
 };

@@ -9,12 +9,12 @@ import {
   PlusIcon,
 } from '@/components/icons';
 import ListCards from './list-cards/list-cards';
-import { Columns } from '@/types/board.type';
+import { IColumn } from '@/types/board.type';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
 import { createNewCard } from '@/lib/features/card/cardThunk';
 
 interface ColumnProps {
-  column: Columns | null;
+  column: IColumn | null;
 }
 
 function Column({ column }: ColumnProps) {

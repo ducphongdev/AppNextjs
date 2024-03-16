@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import ListColumns from './list-columns/list-columns';
-import { Board, Cards, Columns, Items } from '@/types/board.type';
+import { IColumn, ICard, IColumn, Items } from '@/types/board.type';
 import {
   DndContext,
   DragEndEvent,
@@ -36,12 +36,12 @@ import { addBoard } from '@/lib/features/board/boardSlice';
 import { updateColumnDetails } from '@/lib/features/column/columnThunk';
 
 interface ListBoardProps {
-  board: Board | null;
+  board: IColumn | null;
 }
 
 interface IMoveColumn {
   map(arg0: (c: any) => any): unknown;
-  dndOrderedColumns: Columns[];
+  dndOrderedColumns: IColumn[];
 }
 
 const ACTIVE_DRAG_ITEM_TYPE = {
@@ -53,7 +53,7 @@ function BoardContent({ board }: ListBoardProps) {
   const id = useId();
 
   const lastOverId = useRef<UniqueIdentifier | null>(null);
-  const [orderColumns, setOrderColumns] = useState<Columns[]>([]);
+  const [orderColumns, setOrderColumns] = useState<IColumn[]>([]);
   const [activeDragItemId, setActiveDragItemId] =
     useState<UniqueIdentifier | null>(null);
   const [activeDragItemType, setActiveDragItemType] = useState<string | null>(
@@ -61,7 +61,7 @@ function BoardContent({ board }: ListBoardProps) {
   );
   const [activeDragItemData, setActiveDragItemData] = useState<any>(null);
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] =
-    useState<Columns | null>(null);
+    useState<IColumn | null>(null);
 
   const dispatch = useAppDispatch();
 
@@ -93,26 +93,26 @@ function BoardContent({ board }: ListBoardProps) {
   };
 
   useEffect(() => {
-    const mapOrderColumns = board?.columns as Columns[];
+    const mapOrderColumns = board?.columns as IColumn[];
     setOrderColumns(mapOrderColumns);
   }, [board]);
 
   // Tìm Column theo CardId
-  const findColumnByCardId = (cardId: string): Columns => {
+  const findColumnByCardId = (cardId: string): IColumn => {
     return orderColumns.find(
       (column) => column?.cards?.map((card) => card._id)?.includes(cardId)
-    ) as Columns;
+    ) as IColumn;
   };
 
   // Func xử lý cập nhật state trong trường hợp kéo Card giữa các Column khác nhau
   const moveCardBetweenDifferentColumns = (
-    overColumn: Columns,
+    overColumn: IColumn,
     overCarId: UniqueIdentifier,
     active: any,
     over: any,
     activeDraggingCardId: UniqueIdentifier,
     activeDraggingCardData: any,
-    activeColumn: Columns,
+    activeColumn: IColumn,
     triggerFrom: string
   ) => {
     setOrderColumns((prevColumns) => {
@@ -171,7 +171,7 @@ function BoardContent({ board }: ListBoardProps) {
           {
             ...activeDraggingCardData,
             columnId: nextOverColumns._id,
-          } as Cards
+          } as ICard
         );
 
         nextOverColumns.cards = nextOverColumns.cards.filter(
@@ -216,7 +216,7 @@ function BoardContent({ board }: ListBoardProps) {
 
   // Func gọi API xử lý kéo thả Column
   const moveColumn = (dndOrderedColumns: IMoveColumn) => {
-    // Cập nhật lại state Board
+    // Cập nhật lại state IColumn
     const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id);
     const newBoard = { ...board };
     newBoard.columns = dndOrderedColumns;
@@ -236,7 +236,7 @@ function BoardContent({ board }: ListBoardProps) {
     dndOrderedCardIds: any,
     columnId: any
   ) => {
-    // Cập nhật lại state Board
+    // Cập nhật lại state IColumn
     // const newBoard = { ...board };
     // const columnToUpdate = newBoard.columns?.find((column) => column._id === columnId);
     // if (columnToUpdate) {
@@ -388,7 +388,7 @@ function BoardContent({ board }: ListBoardProps) {
           (c) => c._id === overCarId
         );
 
-        const dndOrderCards: Cards[] = arrayMove(
+        const dndOrderCards: ICard[] = arrayMove(
           oldColumnWhenDraggingCard?.cards,
           oldColumnIndex,
           newColumnIndex
@@ -398,7 +398,7 @@ function BoardContent({ board }: ListBoardProps) {
         setOrderColumns((prevColumns) => {
           const nextColumns = cloneDeep(prevColumns);
 
-          const targetColumn: Columns | undefined = nextColumns.find(
+          const targetColumn: IColumn | undefined = nextColumns.find(
             (column) => column._id === overColumn._id
           );
 
@@ -426,7 +426,7 @@ function BoardContent({ board }: ListBoardProps) {
 
         const newColumnIndex = orderColumns.findIndex((c) => c._id === over.id);
 
-        // Sắp xếp lại Columns ban đầu (use ArrayMove)
+        // Sắp xếp lại IColumn ban đầu (use ArrayMove)
         const dndOrderedColumns = arrayMove(
           orderColumns,
           oldColumnIndex,

@@ -1,4 +1,4 @@
-export interface Cards {
+export interface ICard {
   _id: string;
   boardId: string;
   columnId: string;
@@ -8,18 +8,21 @@ export interface Cards {
   memberIds?: string[];
   comments?: string[];
   attachments?: string[];
+  start?: string;
+  due?: string;
+  dueComplete?: boolean;
   FE_PlaceholderCard?: boolean;
 }
 
-export interface Columns {
+export interface IColumn {
   _id: string;
   boardId: string;
   title: string;
   cardOrderIds: string[];
-  cards: Cards[];
+  cards: ICard[];
 }
 
-export interface Board {
+export interface IBoard {
   _id: string;
   title: string;
   description: string;
@@ -27,7 +30,7 @@ export interface Board {
   ownerIds: string[];
   memberIds: string[];
   columnOrderIds: string[];
-  columns: Columns[];
+  columns: IColumn[];
 }
 
 export interface IUser {
@@ -44,4 +47,4 @@ export interface AuthState {
   messageError: string | undefined;
   user: {} | IUser;
 }
-export type Items = Columns | Cards;
+export type Items = IColumn | ICard;

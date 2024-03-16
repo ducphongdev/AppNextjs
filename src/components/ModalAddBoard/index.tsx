@@ -36,7 +36,7 @@ function ModalAddBoard({ nameUser }: { nameUser: { organizationId: string } }) {
   ];
 
   const handleOpenModalBox = () => {
-    ulRef.current?.classList.toggle('show-modal');
+    ulRef.current?.classList.toggle('show');
   };
 
   const handleClickActivePermission = (item: any) => {

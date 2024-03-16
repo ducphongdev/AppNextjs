@@ -19,9 +19,14 @@ const config: Config = {
       transitionProperty: {
         'dark-mode': 'backgroundColor, transform',
       },
+      backgroundColor: {
+        overlay: '#000000a3',
+        'surface-overlay': '#282E33',
+      },
     },
   },
   plugins: [],
   darkMode: 'class',
+  important: true,
 };
 export default config;

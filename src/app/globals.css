@@ -41,12 +41,24 @@ html *::-webkit-scrollbar-track {
   background: #e8e2e2;
 }
 
-.show-modal {
+.show {
   display: block;
 }
 
 .active {
   background-color: #1c2b41 !important;
+}
+
+.edit {
+  @apply hidden;
+}
+
+.editing .hide-one-edit {
+  display: none !important;
+}
+
+.editing .edit {
+  @apply block;
 }
 
 .opacity-active > div::before {
@@ -60,6 +72,10 @@ html *::-webkit-scrollbar-track {
   top: 0;
   border-radius: 3px;
   z-index: 0;
+}
+
+.bg-input-active {
+  background-color: #579dff !important;
 }
 
 .active .icon-sidebar {

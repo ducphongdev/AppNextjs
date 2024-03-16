@@ -9,8 +9,7 @@ import {
   toggleAddBoard,
 } from '@/lib/features/modal/modalSlice';
 import ModalAddBoard from '@/components/ModalAddBoard';
-import { useQuery } from 'react-query';
-import { fetchBackdropPhotos } from '@/services/collections';
+import { useClickAway } from '@/lib/hooks/useClickAway';
 
 function OrganizationIdPage({
   params,
@@ -21,22 +20,13 @@ function OrganizationIdPage({
   const { isOpenModalAddBoard } = useAppSelector((state) => state.modal);
 
   const dispatch = useAppDispatch();
-  const boxRef = useRef<null | HTMLLIElement>(null);
+  const ref = useClickAway(() => {
+    dispatch(closeModalAddBoard());
+  });
 
   useEffect(() => {
     dispatch(fetchAllBoardOfUser(params?.organizationId));
   }, [params?.organizationId]);
-
-  useEffect(() => {
-    const handleClick = (e: any) => {
-      if (!boxRef.current?.contains(e.target)) {
-        dispatch(closeModalAddBoard());
-      }
-    };
-    window.addEventListener('click', handleClick);
-
-    return () => window.removeEventListener('click', handleClick);
-  }, [boxRef, dispatch]);
 
   const handleOpenModalAddBoard = () => {
     dispatch(toggleAddBoard(isOpenModalAddBoard));
@@ -111,7 +101,10 @@ function OrganizationIdPage({
                 </li>
               ))}
               {/* Add board */}
-              <li ref={boxRef} className="relative mb-4 mr-3 w-[23.3%]">
+              <li
+                ref={ref}
+                className="relative mb-4 mr-3 w-[23.3%] cursor-pointer"
+              >
                 <div className="relative block group bg-gray-200 w-full h-24 rounded-md">
                   <div
                     onClick={handleOpenModalAddBoard}
