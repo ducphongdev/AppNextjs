@@ -6,15 +6,15 @@ import {
   moveCardToDifferentColumn,
   updateBoardDetails,
 } from './boardThunk';
-import { IColumn } from '@/types/board.type';
+import { IBoard } from '@/types/board.type';
 import { isEmpty } from 'lodash';
 import { generatePlaceholderCard } from '@/utils/formatter';
 import { mapOrder } from '@/utils/sorts';
 interface BoardState {
   isLoading: boolean;
   isError: boolean;
-  listBoards: IColumn[];
-  boards: IColumn | null;
+  listBoards: IBoard[];
+  boards: IBoard | null;
 }
 
 const initialState: BoardState = {
@@ -28,16 +28,19 @@ export const boardSlice = createSlice({
   name: 'board',
   initialState,
   reducers: {
-    addBoard: (state, { payload }) => {
-      state.boards = payload;
+    updateBoard: (state, { payload }) => {
+      let newBoard = { ...state.boards };
+      newBoard.columns = payload.dndOrderedColumns;
+      newBoard.columnOrderIds = payload.dndOrderedColumnsIds;
+      state.boards = newBoard as IBoard;
     },
     addCardByBoard: (state, { payload }) => {
       const newBoard = { ...state.boards };
+
       const columnToUpdate = newBoard?.columns?.find(
         (column) => column._id === payload.columnId
       );
 
-      console.log('🚀 ~ columnToUpdate:', columnToUpdate);
       if (columnToUpdate) {
         if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
           columnToUpdate.cards = [payload];
@@ -47,7 +50,7 @@ export const boardSlice = createSlice({
           columnToUpdate.cardOrderIds.push(payload._id);
         }
       }
-      state.boards = newBoard;
+      state.boards = newBoard as IBoard;
     },
 
     addColumnByBoard: (state, { payload }) => {
@@ -120,7 +123,7 @@ export const boardSlice = createSlice({
   },
 });
 
-export const { addBoard, addCardByBoard, addColumnByBoard } =
+export const { updateBoard, addCardByBoard, addColumnByBoard } =
   boardSlice.actions;
 
 export default boardSlice.reducer;

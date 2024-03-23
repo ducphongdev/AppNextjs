@@ -9,7 +9,10 @@ export const generatePlaceholderCard = (column: any) => {
   };
 };
 
-export const convertDate = (date: string, type: string) => {
+export const convertDate = (
+  date: string | undefined,
+  type: string | undefined
+) => {
   if (!date) return '';
   return moment(date)?.format(type);
 };

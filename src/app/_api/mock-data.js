@@ -34,3 +34,34 @@ export const photos = [
       'https://images.unsplash.com/photo-1704138160435-bc0848d02813?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDJ8MzE3MDk5fHx8fHwyfHwxNzA5NTM0NjIzfA&ixlib=rb-4.0.3&q=80&w=400',
   },
 ];
+
+export const FakeDateTask = [
+  {
+    id: '0',
+    name: 'Test',
+    checkItems: ['0', '1', '2'],
+    checkItem: [
+      {
+        id: '0',
+        name: 'Học Nodejs',
+        checkListId: '0',
+      },
+      {
+        id: '1',
+        name: 'Học Nextjs',
+        checkListId: '0',
+      },
+      {
+        id: '2',
+        name: 'Học PHP',
+        checkListId: '0',
+      },
+    ],
+  },
+  {
+    id: '1',
+    name: 'Test1',
+    checkItems: ['0', '1', '2'],
+    checkItem: [],
+  },
+];

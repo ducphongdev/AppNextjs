@@ -5,7 +5,7 @@ import Image from '../Image';
 import Button from '../button';
 import {
   BarsThreeIcon,
-  CheckCircleIcon,
+  ClipboardIcon,
   ClockIcon,
   CloseIcon,
   DownIcon,
@@ -17,24 +17,33 @@ import {
   UserPlusIcon,
 } from '../icons';
 import {
+  cancelEdit,
   closeModalToolbar,
   openModalDate,
+  toggleModalAddTask,
 } from '@/lib/features/modal/modalSlice';
 import { updateCardDetails } from '@/lib/features/card/cardThunk';
 import ModalTimeCard from '../ModalTimeCard';
 import { convertDate } from '@/utils/formatter';
+import ListTask from '../ListTask';
+import ModalAddTask from '../ModalAddTask';
+import { createNewTask } from '@/lib/features/task/taskThunk';
+import { useClickAway } from '@/lib/hooks/useClickAway';
 
 function ModalToolbar() {
   const [isOpenDescription, setIsOpenDescription] = useState<boolean>(false);
   const [description, setDescription] = useState<string>('');
-  const { card } = useAppSelector((state) => state.card);
-  const { isOpenModalDate } = useAppSelector((state) => state.modal);
+  const { card, isLoading } = useAppSelector((state) => state.card);
+  const { isOpenModalDate, isOpenModalAddTask } = useAppSelector(
+    (state) => state.modal
+  );
   const dispatch = useAppDispatch();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const { dueComplete, completionDeadline, almostExpired } = useAppSelector(
     (state) => state.dateTask
   );
+  const ref = useClickAway(() => setIsOpenDescription(false));
 
   useEffect(() => {
     if (isOpenDescription && textareaRef.current) {
@@ -44,7 +53,8 @@ function ModalToolbar() {
 
   const handleEditDescription = () => {
     setIsOpenDescription(true);
-    setDescription(card?.description);
+    setDescription(card?.description as string);
+    dispatch(cancelEdit());
   };
 
   const handleCloseModal = () => dispatch(closeModalToolbar());
@@ -73,21 +83,22 @@ function ModalToolbar() {
   };
 
   const handleConvertDates = () => {
+    console.log(card);
     const dateStart = convertDate(card?.start, 'DD/MM/YY');
     const dateDue = convertDate(card?.due, 'DD/MM/YY');
     let text = '';
 
     if (dateStart && dateDue) {
-      return (text = `${convertDate(card.start, 'DD/MM/YY')} - ${convertDate(
-        card.due,
+      return (text = `${convertDate(card?.start, 'DD/MM/YY')} - ${convertDate(
+        card?.due,
         'DD/MM/YY [lúc] HH:mm'
       )}`);
     }
     if (dateStart) {
-      return (text = convertDate(card.start, 'DD/MM/YY'));
+      return (text = convertDate(card?.start, 'DD/MM/YY'));
     }
     if (dateDue) {
-      return (text = `${convertDate(card.due, 'DD/MM/YY [lúc] HH:mm')}`);
+      return (text = `${convertDate(card?.due, 'DD/MM/YY [lúc] HH:mm')}`);
     }
     return null;
   };
@@ -96,16 +107,27 @@ function ModalToolbar() {
     const dataInfo = {
       cardId: card?._id,
       dataUpdate: {
-        dueComplete: e.target.checked,
+        dueComplete: (e.target as HTMLInputElement).checked,
       },
     };
     dispatch(updateCardDetails(dataInfo));
   };
 
+  const handleAddTask = (title: string | undefined) => {
+    dispatch(
+      createNewTask({
+        boardId: card?.boardId,
+        cardId: card?._id,
+        title,
+      })
+    );
+  };
+
+  if (isLoading) return 'Loading';
   return (
     <div
       onClick={handleCloseModal}
-      className="fixed inset-0 w-full flex items-start justify-center z-20 bg-overlay"
+      className="fixed h-screen overflow-auto inset-0 w-full flex items-start justify-center z-20 bg-overlay"
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -166,7 +188,6 @@ function ModalToolbar() {
                     </Button>
                   </div>
                 </div>
-
                 <div className="h-16 float-left block mb-2 mr-2">
                   <h3 className="text-sm text-slate-300 mb-1">Thông báo</h3>
                   <a
@@ -182,7 +203,6 @@ function ModalToolbar() {
                     <span></span>
                   </a>
                 </div>
-
                 <div
                   className={clsx(
                     'float-left block mb-2 mr-2 w-full',
@@ -194,8 +214,7 @@ function ModalToolbar() {
                     <span className="mr-1">
                       <input
                         type="checkbox"
-                        name=""
-                        id=""
+                        className="h-4 w-4 cursor-pointer bg-[#22272B] border-none rounded-sm shadow-dp-input"
                         onClick={handleCompleteCard}
                       />
                     </span>
@@ -227,8 +246,7 @@ function ModalToolbar() {
                     </div>
                   </div>
                 </div>
-
-                <div className="float-left mb-2 mr-2 w-full">
+                <div ref={ref} className="float-left mb-2 mr-2 w-full">
                   <div className="relative flex items-center py-2">
                     <span className="absolute left-[-30px] top-2">
                       <BarsThreeIcon className="w-7" />
@@ -252,7 +270,7 @@ function ModalToolbar() {
                   <div className={clsx(isOpenDescription && 'editing')}>
                     <div
                       onClick={handleEditDescription}
-                      className="text-sm text-slate-300 cursor-pointer hide-one-edit"
+                      className="text-sm text-slate-300 cursor-pointer hide-on-edit"
                     >
                       {card?.description && <p>{card?.description}</p>}
                     </div>
@@ -261,11 +279,14 @@ function ModalToolbar() {
                         'w-full',
                         card?.description ? 'hidden' : ''
                       )}
-                      onClick={() => setIsOpenDescription(true)}
+                      onClick={() => {
+                        setIsOpenDescription(true);
+                        dispatch(cancelEdit());
+                      }}
                     >
                       <a
                         href="#"
-                        className="block bg-[#A1BDD914] text-sm font-medium rounded text-[#B6C2CF] min-h-12 px-3 py-2 hover:bg-[#A6C5E229] hide-one-edit"
+                        className="block bg-[#A1BDD914] text-sm font-medium rounded text-[#B6C2CF] min-h-12 px-3 py-2 hover:bg-[#A6C5E229] hide-on-edit"
                       >
                         Thêm mô tả chi tiết hơn...
                       </a>
@@ -294,7 +315,7 @@ function ModalToolbar() {
                     </div>
                   </div>
                 </div>
-
+                <ListTask card={card} />
                 <div className="float-left w-full mb-2 mr-2">
                   <div className="relative flex justify-between items-center mb-1">
                     <span className="absolute left-[-30px] top-1">
@@ -320,7 +341,7 @@ function ModalToolbar() {
                     </div>
                     <div className="rounded-md pt-2">
                       <input
-                        className="text-sm w-full bg-black text-slate-300 px-3 rounded-md py-2"
+                        className="text-sm w-full bg-input text-slate-300 px-3 rounded-md py-2"
                         placeholder="Viết bình luận"
                         type="text"
                         name=""
@@ -348,57 +369,73 @@ function ModalToolbar() {
 
               <div className="mb-4">
                 <h3 className="text-xs text-slate-300 mb-2">Thêm vào thẻ</h3>
-                <a
-                  href="#"
-                  className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
-                >
-                  <span className="mr-1">
-                    <UserIcon className="w-4" />
-                  </span>
-                  <span className="text-sm text-slate-300">Thành viên</span>
-                </a>
+                <div>
+                  <a
+                    href="#"
+                    className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
+                  >
+                    <span className="mr-1">
+                      <UserIcon className="w-4" />
+                    </span>
+                    <span className="text-sm text-slate-300">Thành viên</span>
+                  </a>
+                </div>
 
-                <a
-                  href="#"
-                  className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
-                >
-                  <span className="mr-1">
-                    <TagIcon className="w-4" />
-                  </span>
-                  <span className="text-sm text-slate-300">Nhãn</span>
-                </a>
+                <div>
+                  <a
+                    href="#"
+                    className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
+                  >
+                    <span className="mr-1">
+                      <TagIcon className="w-4" />
+                    </span>
+                    <span className="text-sm text-slate-300">Nhãn</span>
+                  </a>
+                </div>
 
-                <a
-                  href="#"
-                  className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
-                >
-                  <span className="mr-1">
-                    <CheckCircleIcon className="w-4" />
-                  </span>
-                  <span className="text-sm text-slate-300">Việc cần làm</span>
-                </a>
+                <div className="relative">
+                  <a
+                    href="#"
+                    className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
+                    onClick={() =>
+                      dispatch(toggleModalAddTask(isOpenModalAddTask))
+                    }
+                  >
+                    <span className="mr-1">
+                      <ClipboardIcon className="w-4" />
+                    </span>
+                    <span className="text-sm text-slate-300">Việc cần làm</span>
+                  </a>
+                  {isOpenModalAddTask && (
+                    <ModalAddTask handleAddTask={handleAddTask} />
+                  )}
+                </div>
 
-                <a
-                  href="#"
-                  className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
-                  onClick={() => dispatch(openModalDate())}
-                >
-                  <span className="mr-1">
-                    <ClockIcon className="w-4" />
-                  </span>
-                  <span className="text-sm text-slate-300">Ngày</span>
-                </a>
-                {isOpenModalDate && <ModalTimeCard />}
+                <div>
+                  <a
+                    href="#"
+                    className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
+                    onClick={() => dispatch(openModalDate())}
+                  >
+                    <span className="mr-1">
+                      <ClockIcon className="w-4" />
+                    </span>
+                    <span className="text-sm text-slate-300">Ngày</span>
+                  </a>
+                  {isOpenModalDate && <ModalTimeCard />}
+                </div>
 
-                <a
-                  href="#"
-                  className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
-                >
-                  <span className="mr-1">
-                    <PaperIcon className="w-4" />
-                  </span>
-                  <span className="text-sm text-slate-300">Đính kèm</span>
-                </a>
+                <div>
+                  <a
+                    href="#"
+                    className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
+                  >
+                    <span className="mr-1">
+                      <PaperIcon className="w-4" />
+                    </span>
+                    <span className="text-sm text-slate-300">Đính kèm</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

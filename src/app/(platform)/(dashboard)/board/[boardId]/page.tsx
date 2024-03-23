@@ -15,8 +15,10 @@ import {
 function Board({ params }: { params: { boardId: string } }) {
   const dispatch = useAppDispatch();
   const { boards, isLoading } = useAppSelector((state) => state.board);
+
   const { isOpenModalToolbar } = useAppSelector((state) => state.modal);
   const { card } = useAppSelector((state) => state.card);
+
   useEffect(() => {
     dispatch(fetchBoardById(params.boardId));
   }, [dispatch]);

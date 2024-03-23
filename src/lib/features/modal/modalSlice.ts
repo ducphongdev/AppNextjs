@@ -1,9 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
+interface Imodal {
+  isOpenModalAddBoard: boolean;
+  isOpenModalToolbar: boolean;
+  isOpenModalDate: boolean;
+  isOpenModalAddTask: boolean;
+  editing: null | string;
+}
+
+const initialState: Imodal = {
   isOpenModalAddBoard: false,
   isOpenModalToolbar: false,
   isOpenModalDate: false,
+  isOpenModalAddTask: false,
+  editing: null,
 };
 
 export const modalSlice = createSlice({
@@ -21,12 +31,24 @@ export const modalSlice = createSlice({
     },
     closeModalToolbar: (state) => {
       state.isOpenModalToolbar = false;
+      state.editing = null;
     },
     openModalDate: (state) => {
       state.isOpenModalDate = true;
     },
     closeModalDate: (state) => {
       state.isOpenModalDate = false;
+      state.editing = null;
+    },
+    toggleModalAddTask: (state, { payload }) => {
+      state.isOpenModalAddTask = !payload;
+      state.editing = null;
+    },
+    startEdit: (state, { payload }) => {
+      state.editing = payload;
+    },
+    cancelEdit: (state) => {
+      state.editing = null;
     },
   },
 });
@@ -38,5 +60,8 @@ export const {
   closeModalToolbar,
   openModalDate,
   closeModalDate,
+  toggleModalAddTask,
+  startEdit,
+  cancelEdit,
 } = modalSlice.actions;
 export default modalSlice.reducer;

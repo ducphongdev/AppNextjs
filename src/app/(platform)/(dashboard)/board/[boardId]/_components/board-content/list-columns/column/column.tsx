@@ -31,9 +31,7 @@ function Column({ column }: ColumnProps) {
   });
   const dispatch = useAppDispatch();
   const board = useAppSelector((state) => state.board.boards);
-
   const [openNewCardForm, setOpenNewCardForm] = useState<boolean>(false);
-
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm);
 
   const style = {
@@ -48,14 +46,13 @@ function Column({ column }: ColumnProps) {
   const orderCards = column?.cards;
 
   const createCard = async (title: string) => {
-    const addNewCard = {
-      title: title,
-      columnId: column?._id,
-      boardId: board?._id,
-    };
-
-    dispatch(createNewCard(addNewCard));
-
+    dispatch(
+      createNewCard({
+        title: title,
+        columnId: column?._id,
+        boardId: board?._id,
+      })
+    );
     toggleOpenNewCardForm();
   };
 
@@ -72,11 +69,8 @@ function Column({ column }: ColumnProps) {
       >
         {/* Header */}
         <div className="flex justify-between items-center px-2 pt-2 gap-x-2">
-          <div>
-            <h2 className="text-gray-800 dark:text-gray-200">
-              {column?.title}
-            </h2>
-          </div>
+          <h2 className="text-gray-800 dark:text-gray-200">{column?.title}</h2>
+
           <Button>
             <OptionIcon className="w-4 text-white" />
           </Button>

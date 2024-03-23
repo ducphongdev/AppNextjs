@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'hover:bg-[#A6C5E299] ml-2 rounded-full',
-        box: ' ml-2 rounded-sm bg-slate-200 px-4 py-1.5',
+        box: ' ml-2 rounded-sm bg-[#A6C5E235] px-4 py-1.5',
         outline:
           'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
         secondary:
@@ -25,7 +25,7 @@ const buttonVariants = cva(
       size: {
         default: 'w-8 h-8',
         sm: 'w-9 h-9 rounded-md px-3',
-        lg: 'w-6 h-6',
+        lg: 'w-20 h-8 rounded-sm',
         icon: 'h-10 w-10',
         inline: 'h-auto px-2 text-sm',
         full: 'w-full h-full px-2 text-sm',

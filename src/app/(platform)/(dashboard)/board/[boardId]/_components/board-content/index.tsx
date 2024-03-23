@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import ListColumns from './list-columns/list-columns';
-import { IColumn, ICard, IColumn, Items } from '@/types/board.type';
+import { IColumn, ICard, Items, IBoard } from '@/types/board.type';
 import {
   DndContext,
   DragEndEvent,
@@ -19,24 +19,24 @@ import {
   Active,
   closestCorners,
 } from '@dnd-kit/core';
+import { Coordinates } from '@dnd-kit/utilities';
+import {
+  moveCardToDifferentColumn,
+  updateBoardDetails,
+} from '@/lib/features/board/boardThunk';
 import { MouseSensor, TouchSensor } from '@/lib/dndkit-sensor';
+import { useAppDispatch } from '@/lib/hooks/useReduxHooks';
+import { updateBoard } from '@/lib/features/board/boardSlice';
+import { updateColumnDetails } from '@/lib/features/column/columnThunk';
 import { arrayMove } from '@dnd-kit/sortable';
 import { cloneDeep, isEmpty } from 'lodash';
 import Column from './list-columns/column/column';
 import Card from './list-columns/column/list-cards/card/card';
 import { DroppableContainer, RectMap } from '@dnd-kit/core/dist/store';
-import { Coordinates } from '@dnd-kit/utilities';
 import { generatePlaceholderCard } from '@/utils/formatter';
-import { useAppDispatch } from '@/lib/hooks/useReduxHooks';
-import {
-  moveCardToDifferentColumn,
-  updateBoardDetails,
-} from '@/lib/features/board/boardThunk';
-import { addBoard } from '@/lib/features/board/boardSlice';
-import { updateColumnDetails } from '@/lib/features/column/columnThunk';
 
 interface ListBoardProps {
-  board: IColumn | null;
+  board: IBoard | null;
 }
 
 interface IMoveColumn {
@@ -185,10 +185,12 @@ function BoardContent({ board }: ListBoardProps) {
 
       if (triggerFrom === 'handleDragEnd') {
         const dndOrderedColumnsIds = nextColumn.map((c) => c._id);
-        const newBoard = { ...board };
-        newBoard.columns = nextColumn;
-        newBoard.columnOrderIds = dndOrderedColumnsIds;
-        dispatch(addBoard(newBoard));
+        dispatch(
+          updateBoard({
+            dndOrderedColumns: nextColumn,
+            dndOrderedColumnsIds,
+          })
+        );
 
         let prevCardOrderIds =
           nextColumn.find((c) => c._id === oldColumnWhenDraggingCard?._id)
@@ -215,19 +217,22 @@ function BoardContent({ board }: ListBoardProps) {
   };
 
   // Func gọi API xử lý kéo thả Column
-  const moveColumn = (dndOrderedColumns: IMoveColumn) => {
-    // Cập nhật lại state IColumn
-    const dndOrderedColumnsIds = dndOrderedColumns.map((c) => c._id);
-    const newBoard = { ...board };
-    newBoard.columns = dndOrderedColumns;
-    newBoard.columnOrderIds = dndOrderedColumnsIds;
-    dispatch(addBoard(newBoard));
+  const moveColumn = (dndOrderedColumns: IColumn[]) => {
+    // Cập nhật lại state Column
+    const dndOrderedColumnsIds = dndOrderedColumns.map((c: IColumn) => c._id);
+    dispatch(
+      updateBoard({
+        dndOrderedColumns,
+        dndOrderedColumnsIds,
+      })
+    );
 
-    const infUpdate = {
-      boardId: newBoard._id,
-      dataUpdate: { columnOrderIds: dndOrderedColumnsIds },
-    };
-    dispatch(updateBoardDetails(infUpdate));
+    dispatch(
+      updateBoardDetails({
+        boardId: board?._id,
+        dataUpdate: { columnOrderIds: dndOrderedColumnsIds },
+      })
+    );
   };
 
   // Func gọi API xử lý kéo thả Card trong cùng một Column

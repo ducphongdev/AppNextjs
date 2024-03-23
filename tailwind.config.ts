@@ -15,6 +15,7 @@ const config: Config = {
         'line-input': '0 0 0 2px #85B8FF',
         'border-modal':
           '0px 0px 0px 1px #39424a, 0px 8px 12px #0304045C, 0px 0px 1px 1px #03040480',
+        'dp-input': 'inset 0 0 0 2px #738496',
       },
       transitionProperty: {
         'dark-mode': 'backgroundColor, transform',
@@ -22,6 +23,7 @@ const config: Config = {
       backgroundColor: {
         overlay: '#000000a3',
         'surface-overlay': '#282E33',
+        input: '#22272B',
       },
     },
   },

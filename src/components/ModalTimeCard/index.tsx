@@ -42,26 +42,6 @@ function ModalTimeCard() {
     }
   }, [card]);
 
-  // const handleNotificationStatus = () => {
-  //   const isWithin24Hours = moment(card?.due).isBetween(
-  //     moment(),
-  //     moment().add(24, 'h')
-  //   );
-
-  //   if (isWithin24Hours) {
-  //     dispatch(setIsAlmostExpired());
-  //   } else if (moment().isAfter(moment(card?.due))) {
-  //     dispatch(setIsCompletionDeadline());
-  //   } else {
-  //     dispatch(resetIsTaskStatus());
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   // const start = dateStart?.format();
-  //   handleNotificationStatus();
-  // }, [card]);
-
   const handleSetDateCard = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const start = !isDisableDateStart ? dateStart : '';
@@ -109,7 +89,6 @@ function ModalTimeCard() {
           <form onSubmit={handleSetDateCard}>
             <div className="my-4">
               <div className="my-2">
-                <div></div>
                 <div className="mb-2">
                   <label
                     className="block pb-1 text-slate-300 text-sm"
@@ -118,13 +97,14 @@ function ModalTimeCard() {
                     Ngày bắt đầu
                   </label>
                   <div className="flex items-center">
-                    <span
+                    <input
+                      type="checkbox"
                       onClick={() => setIsDisableDateStart((prev) => !prev)}
                       className={clsx(
-                        'mr-2 w-3 h-3 bg-slate-600 cursor-pointer shadow-md',
+                        'h-4 w-4 mr-2 cursor-pointer bg-[#22272B] border-none rounded-sm shadow-dp-input',
                         isDisableDateStart && 'bg-input-active'
                       )}
-                    ></span>
+                    />
                     <DatePicker
                       value={dateStart}
                       onChange={(date) => setDateStart(date || '')}
@@ -143,13 +123,14 @@ function ModalTimeCard() {
                       Ngày hết hạn
                     </label>
                     <div className="flex items-center">
-                      <span
-                        onClick={() => setIsDisableDateDue((prev) => !prev)}
+                      <input
+                        type="checkbox"
                         className={clsx(
-                          'mr-2 w-3 h-3 bg-slate-600 cursor-pointer shadow-md',
+                          'h-4 w-4 mr-2 cursor-pointer bg-[#22272B] border-none rounded-sm shadow-dp-input',
                           isDisableDateDue && 'bg-input-active'
                         )}
-                      ></span>
+                        onClick={() => setIsDisableDateDue((prev) => !prev)}
+                      />
                       <DatePicker
                         onChange={(date) => {
                           setDateEnd(date || '');

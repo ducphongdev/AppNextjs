@@ -1,6 +1,6 @@
 import { API_ROOT } from '@/utils/constants';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { IColumn } from '@/types/board.type';
+import { IBoard } from '@/types/board.type';
 
 export const fetchAllBoardOfUser = createAsyncThunk(
   'board/fetchAllBoardOfUser',
@@ -8,7 +8,7 @@ export const fetchAllBoardOfUser = createAsyncThunk(
     const response = await fetch(`${API_ROOT}/v1/boards/member/${userName}`, {
       method: 'GET',
     });
-    return (await response.json()) as IColumn[];
+    return (await response.json()) as IBoard[];
   }
 );
 
@@ -18,7 +18,7 @@ export const fetchBoardById = createAsyncThunk(
     const response = await fetch(`${API_ROOT}/v1/boards/${boardId}`, {
       method: 'GET',
     });
-    return (await response.json()) as IColumn;
+    return (await response.json()) as IBoard;
   }
 );
 
@@ -32,7 +32,7 @@ export const createBoard = createAsyncThunk(
       },
       body: JSON.stringify(newBoard),
     });
-    return (await response.json()) as IColumn;
+    return (await response.json()) as IBoard;
   }
 );
 
@@ -47,7 +47,7 @@ export const updateBoardDetails = createAsyncThunk(
       },
       body: JSON.stringify(dataUpdate),
     });
-    return (await response.json()) as IColumn;
+    return (await response.json()) as IBoard;
   }
 );
 
@@ -61,6 +61,6 @@ export const moveCardToDifferentColumn = createAsyncThunk(
       },
       body: JSON.stringify(updateData),
     });
-    return (await response.json()) as IColumn;
+    return (await response.json()) as IBoard;
   }
 );

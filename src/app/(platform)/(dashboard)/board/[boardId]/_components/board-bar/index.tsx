@@ -1,4 +1,4 @@
-import { IColumn } from '@/types/board.type';
+import { IBoard } from '@/types/board.type';
 import Button from '@/components/button';
 import {
   BoltIcon,
@@ -11,7 +11,7 @@ import {
   UserPlusIcon,
 } from '@/components/icons';
 
-function BoardBar({ board }: { board: IColumn | null }) {
+function BoardBar({ board }: { board: IBoard | null }) {
   return (
     <div className="flex justify-between items-center gap-2 pl-4 py-3 pr-[10px] boardBar--background">
       <span className="flex items-center">
