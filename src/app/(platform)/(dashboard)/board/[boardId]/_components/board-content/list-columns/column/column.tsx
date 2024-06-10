@@ -2,12 +2,7 @@ import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Button from '@/components/button';
-import {
-  CloseIcon,
-  DuplicateIcon,
-  OptionIcon,
-  PlusIcon,
-} from '@/components/icons';
+import { DuplicateIcon, OptionIcon, PlusIcon } from '@/components/icons';
 import ListCards from './list-cards/list-cards';
 import { IColumn } from '@/types/board.type';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
@@ -68,10 +63,10 @@ function Column({ column }: ColumnProps) {
         {...listeners}
       >
         {/* Header */}
-        <div className="flex justify-between items-center px-2 pt-2 gap-x-2">
+        <div className="flex justify-between items-center px-2 pt-2 gap-x-2 mb-2">
           <h2 className="text-gray-800 dark:text-gray-200">{column?.title}</h2>
 
-          <Button>
+          <Button data-no-dnd={true} className="rounded-lg hover:bg-btn-tdp">
             <OptionIcon className="w-4 text-white" />
           </Button>
         </div>

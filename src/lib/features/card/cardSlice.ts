@@ -19,20 +19,42 @@ export const cardSlice = createSlice({
   name: 'card',
   initialState,
   reducers: {
-    updateCard: (state, { payload }) => {
+    updateTasksOrderedIds: (state, { payload }) => {
       let newCard = { ...state.card };
       newCard.tasks = payload.dndOrderedTasks;
       newCard.taskOrderIds = payload.dndOrderedTasksIds;
       state.card = newCard as ICard;
     },
-    addTaskByCard: (state, { payload }) => {
-      const cloneCard = { ...state.card };
-      cloneCard.taskOrderIds?.push(payload._id);
-      cloneCard.tasks.push(payload);
-      state.card = cloneCard as ICard;
+    addTaskByCard: (state: any, { payload }) => {
+      payload.taskItems = [];
+      state.card.taskOrderIds?.push(payload._id);
+      state.card.tasks.push(payload);
+    },
+    deleteTaskByCard: ({ card }, { payload }) => {
+      if (card?.badges) {
+        const taskToDelete = card.tasks.find(
+          (task: ITask) => task._id === payload
+        );
+        if (taskToDelete) {
+          const countTaskItemDele = taskToDelete.taskItems.length;
+          card.badges.taskItems = Math.max(
+            0,
+            card.badges.taskItems - countTaskItemDele
+          );
+          card.badges.taskItemsChecked = Math.max(
+            0,
+            card.badges.taskItemsChecked - countTaskItemDele
+          );
+        }
+        card.tasks = card.tasks.filter((task: ITask) => task._id !== payload);
+        card.taskOrderIds = card.taskOrderIds?.filter((id) => id !== payload);
+      }
     },
     addTaskItemByCard: (state, { payload }) => {
       const cloneCard = { ...state.card };
+      if (cloneCard.badges) {
+        cloneCard.badges.taskItems += 1;
+      }
       const taskToUpdate = cloneCard.tasks.find(
         (task: ITask) => task._id === payload.taskId
       );
@@ -44,24 +66,31 @@ export const cardSlice = createSlice({
       state.card = cloneCard as ICard;
     },
     updateTaskItemByCard: (state, { payload }) => {
-      let cloneCard = { ...state.card };
-      const taskToUpdate = cloneCard.tasks.find(
-        (task: ITask) => task._id === payload.taskId
-      );
-      if (taskToUpdate) {
-        const taskItemToIndex = taskToUpdate.taskItems.findIndex(
-          (taskItem: any) => taskItem._id === payload.taskItemId
-        );
+      const { taskId, taskItemId, state: itemState } = payload;
+      const { card } = state;
 
-        if (taskItemToIndex !== -1) {
-          // Tìm thấy taskItem cần update trong mảng taskItems
-          taskToUpdate.taskItems[taskItemToIndex] = {
-            ...taskToUpdate.taskItems[taskItemToIndex],
-            ...payload, // Ghi đè các giá trị từ payload
-          };
-          state.card = cloneCard as ICard;
-        }
-      }
+      const updatedCard = {
+        ...card,
+        tasks: card?.tasks.map((task: ITask) =>
+          task._id !== taskId
+            ? task
+            : {
+                ...task,
+                taskItems: task.taskItems.map((taskItem: ITaskItem) =>
+                  taskItem._id !== taskItemId
+                    ? taskItem
+                    : { ...taskItem, ...payload }
+                ),
+              }
+        ),
+        badges: {
+          ...card?.badges,
+          taskItemsChecked:
+            (card?.badges ? card.badges.taskItemsChecked : 0) +
+            (itemState === 'complete' ? 1 : -1),
+        },
+      };
+      state.card = updatedCard as ICard;
     },
   },
   extraReducers: (builder) => {
@@ -83,7 +112,10 @@ export const cardSlice = createSlice({
       // state.isLoading = true;
     });
     builder.addCase(updateCardDetails.fulfilled, (state, { payload }) => {
-      // state.isLoading = false;
+      state.card = {
+        ...state.card,
+        ...payload,
+      };
     });
     builder.addCase(updateCardDetails.rejected, (state) => {
       // state.isLoading = false;
@@ -92,9 +124,11 @@ export const cardSlice = createSlice({
 });
 
 export const {
-  updateCard,
+  updateTasksOrderedIds,
   addTaskByCard,
+  deleteTaskByCard,
   addTaskItemByCard,
   updateTaskItemByCard,
 } = cardSlice.actions;
+
 export default cardSlice.reducer;

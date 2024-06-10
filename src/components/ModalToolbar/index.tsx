@@ -5,44 +5,35 @@ import Image from '../Image';
 import Button from '../button';
 import {
   BarsThreeIcon,
-  ClipboardIcon,
-  ClockIcon,
   CloseIcon,
   DownIcon,
   EyeIcon,
-  PaperIcon,
   TableCellsIcon,
-  TagIcon,
-  UserIcon,
-  UserPlusIcon,
 } from '../icons';
 import {
   cancelEdit,
-  closeModalToolbar,
-  openModalDate,
-  toggleModalAddTask,
+  setModalModalAddTask,
+  toggleModalToolBar,
 } from '@/lib/features/modal/modalSlice';
 import { updateCardDetails } from '@/lib/features/card/cardThunk';
-import ModalTimeCard from '../ModalTimeCard';
 import { convertDate } from '@/utils/formatter';
 import ListTask from '../ListTask';
-import ModalAddTask from '../ModalAddTask';
 import { createNewTask } from '@/lib/features/task/taskThunk';
 import { useClickAway } from '@/lib/hooks/useClickAway';
+import Comment from '../Comment';
+import SliderMenu from '../SliderMenu';
+import PopOver from '@/lib/PopOver';
+import ModalTimeCard from '../ModalTimeCard';
 
-function ModalToolbar() {
+function ModalToolbar({ isExpired }: { isExpired: boolean }) {
   const [isOpenDescription, setIsOpenDescription] = useState<boolean>(false);
   const [description, setDescription] = useState<string>('');
   const { card, isLoading } = useAppSelector((state) => state.card);
-  const { isOpenModalDate, isOpenModalAddTask } = useAppSelector(
-    (state) => state.modal
-  );
+
   const dispatch = useAppDispatch();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-
-  const { dueComplete, completionDeadline, almostExpired } = useAppSelector(
-    (state) => state.dateTask
-  );
+  const spanRef = useRef<null | HTMLSpanElement>(null);
+  const titleDateRef = useRef<null | HTMLHeadingElement>(null);
   const ref = useClickAway(() => setIsOpenDescription(false));
 
   useEffect(() => {
@@ -51,24 +42,45 @@ function ModalToolbar() {
     }
   }, [isOpenDescription]);
 
+  useEffect(() => {
+    const dateElement = spanRef.current as HTMLSpanElement;
+    const titleDate = titleDateRef.current as HTMLHeadingElement;
+    const dateStart = convertDate(card?.start, 'DD/MM/YY');
+    const dateDue = convertDate(card?.due, 'DD/MM/YY [lúc] HH:mm');
+
+    if (dateElement && titleDate) {
+      if (dateStart && dateDue) {
+        titleDate.innerText = 'Ngày';
+        dateElement.innerText = `${dateStart} - ${dateDue}`;
+      } else if (dateStart) {
+        titleDate.innerText = 'Ngày bắt đầu';
+        dateElement.innerText = dateStart;
+      } else {
+        titleDate.innerText = 'Ngày kết thúc';
+        dateElement.innerText = dateDue;
+      }
+    }
+  }, [card]);
+
   const handleEditDescription = () => {
     setIsOpenDescription(true);
     setDescription(card?.description as string);
     dispatch(cancelEdit());
   };
 
-  const handleCloseModal = () => dispatch(closeModalToolbar());
+  const handleCloseModal = () => dispatch(toggleModalToolBar(false));
 
   const handleChangeDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
   };
 
   const handleSaveDescription = () => {
-    const infUpdate = {
-      cardId: card?._id,
-      dataUpdate: { description },
-    };
-    dispatch(updateCardDetails(infUpdate));
+    dispatch(
+      updateCardDetails({
+        cardId: card?._id,
+        dataUpdate: { description },
+      })
+    );
     setIsOpenDescription(false);
   };
 
@@ -82,28 +94,7 @@ function ModalToolbar() {
     return false;
   };
 
-  const handleConvertDates = () => {
-    console.log(card);
-    const dateStart = convertDate(card?.start, 'DD/MM/YY');
-    const dateDue = convertDate(card?.due, 'DD/MM/YY');
-    let text = '';
-
-    if (dateStart && dateDue) {
-      return (text = `${convertDate(card?.start, 'DD/MM/YY')} - ${convertDate(
-        card?.due,
-        'DD/MM/YY [lúc] HH:mm'
-      )}`);
-    }
-    if (dateStart) {
-      return (text = convertDate(card?.start, 'DD/MM/YY'));
-    }
-    if (dateDue) {
-      return (text = `${convertDate(card?.due, 'DD/MM/YY [lúc] HH:mm')}`);
-    }
-    return null;
-  };
-
-  const handleCompleteCard = (e: React.MouseEvent<HTMLInputElement>) => {
+  const handleCompleteCard = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dataInfo = {
       cardId: card?._id,
       dataUpdate: {
@@ -113,7 +104,7 @@ function ModalToolbar() {
     dispatch(updateCardDetails(dataInfo));
   };
 
-  const handleAddTask = (title: string | undefined) => {
+  function handleAddTask(title: string | undefined) {
     dispatch(
       createNewTask({
         boardId: card?.boardId,
@@ -121,7 +112,8 @@ function ModalToolbar() {
         title,
       })
     );
-  };
+    dispatch(setModalModalAddTask(false));
+  }
 
   if (isLoading) return 'Loading';
   return (
@@ -134,13 +126,17 @@ function ModalToolbar() {
         className="mt-12 my-20 relative bg-surface-overlay z-30 w-[768px] rounded-lg"
       >
         <div className="">
-          <a className="absolute top-2 right-2 cursor-pointer" href="#">
+          <a
+            onClick={handleCloseModal}
+            className="absolute top-2 right-2 cursor-pointer"
+            href="#"
+          >
             <CloseIcon className="w-6" />
           </a>
           <div className="min-h-[415px] rounded-lg bg-[#A1BDD914] after:clear-both after:table">
             <div className="min-h-8 items-center py-2 pl-14 pr-[52px]">
               <span
-                onClick={() => dispatch(closeModalToolbar())}
+                onClick={() => dispatch(toggleModalToolBar(false))}
                 className="absolute left-6 top-7"
               >
                 <TableCellsIcon className="w-6" />
@@ -165,21 +161,7 @@ function ModalToolbar() {
                 <div className="mb-2 mr-4 float-left block">
                   <h3 className="text-sm text-slate-300">Thành viên</h3>
                   <div className="flex items-center pt-1 ml-[-8px]">
-                    <Button className="ml-2 relative hover:rounded-full">
-                      <Image
-                        className={'rounded-full'}
-                        fallBack="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg"
-                        alt="anh user"
-                      />
-                    </Button>
-                    <Button className="ml-2 relative hover:rounded-full">
-                      <Image
-                        className={'rounded-full'}
-                        fallBack="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg"
-                        alt="anh user"
-                      />
-                    </Button>
-                    <Button className="ml-2 relative hover:rounded-full">
+                    <Button className="relative hover:rounded-full">
                       <Image
                         className={'rounded-full'}
                         fallBack="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg"
@@ -209,32 +191,35 @@ function ModalToolbar() {
                     handleHiddenDates() ? 'hidden' : 'block'
                   )}
                 >
-                  <h3 className="text-sm text-slate-300 mb-1">Ngày hết hạn</h3>
+                  <h3
+                    ref={titleDateRef}
+                    className="text-sm text-slate-300 mb-1"
+                  ></h3>
                   <div className="flex items-center">
                     <span className="mr-1">
                       <input
+                        checked={card?.dueComplete}
                         type="checkbox"
                         className="h-4 w-4 cursor-pointer bg-[#22272B] border-none rounded-sm shadow-dp-input"
-                        onClick={handleCompleteCard}
+                        onChange={handleCompleteCard}
                       />
                     </span>
-                    <div>
+                    <PopOver content={<ModalTimeCard />} placement="bottomLeft">
                       <div className="inline-flex justify-center items-center flex-row bg-[#A1BDD914] p-2 rounded-md cursor-pointer overflow-hidden">
-                        <span className="text-sm text-slate-400 ml-2 font-semibold">
-                          {handleConvertDates()}
-                        </span>
-                        {dueComplete || completionDeadline || almostExpired ? (
+                        <span
+                          ref={spanRef}
+                          className="text-sm text-slate-400 ml-2 font-semibold"
+                        ></span>
+                        {card?.dueComplete || isExpired ? (
                           <span
                             className={clsx(
-                              'text-sm rounded-sm ml-2 px-1',
-                              (dueComplete && 'bg-green-600') ||
-                                (completionDeadline && 'bg-red-600') ||
-                                (almostExpired && 'bg-yellow-600')
+                              'text-sm rounded-sm ml-2 px-1 $',
+                              (card?.dueComplete && 'bg-green-600') ||
+                                (isExpired && 'bg-red-400')
                             )}
                           >
-                            {(dueComplete && 'Hoàn Thành') ||
-                              (completionDeadline && 'Hết hạn') ||
-                              (almostExpired && 'Sắp hết hạn')}
+                            {(card?.dueComplete && 'Hoàn thành') ||
+                              (isExpired && 'Hết hạn')}
                           </span>
                         ) : (
                           ''
@@ -243,7 +228,7 @@ function ModalToolbar() {
                           <DownIcon className="w-4" />
                         </span>
                       </div>
-                    </div>
+                    </PopOver>
                   </div>
                 </div>
                 <div ref={ref} className="float-left mb-2 mr-2 w-full">
@@ -316,128 +301,11 @@ function ModalToolbar() {
                   </div>
                 </div>
                 <ListTask card={card} />
-                <div className="float-left w-full mb-2 mr-2">
-                  <div className="relative flex justify-between items-center mb-1">
-                    <span className="absolute left-[-30px] top-1">
-                      <BarsThreeIcon className="w-7" />
-                    </span>
-                    <h3 className="text-base text-slate-400 ml-2">Hoạt động</h3>
-                    <div>
-                      <Button size="inline" variant="box">
-                        Hiện chi tiết
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="relative ml-2">
-                    <div className="absolute left-[-48px] top-2">
-                      <Button className="ml-2 relative hover:rounded-full">
-                        <Image
-                          className={'rounded-full'}
-                          fallBack="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg"
-                          alt="anh user"
-                        />
-                      </Button>
-                    </div>
-                    <div className="rounded-md pt-2">
-                      <input
-                        className="text-sm w-full bg-input text-slate-300 px-3 rounded-md py-2"
-                        placeholder="Viết bình luận"
-                        type="text"
-                        name=""
-                        id=""
-                      />
-                    </div>
-                  </div>
-                </div>
+                <Comment />
               </div>
             </div>
 
-            <div className="float-right pl-2 pr-4">
-              <div className="mb-4">
-                <h3 className="text-xs text-slate-300 mb-2">Đã gợi ý</h3>
-                <a
-                  href="#"
-                  className="flex items-center w-[138px] bg-[#A1BDD914] p-2 rounded-sm cursor-pointer overflow-hidden"
-                >
-                  <span className="mr-1">
-                    <UserPlusIcon className="w-4" />
-                  </span>
-                  <span className="text-sm text-slate-300">Tham gia</span>
-                </a>
-              </div>
-
-              <div className="mb-4">
-                <h3 className="text-xs text-slate-300 mb-2">Thêm vào thẻ</h3>
-                <div>
-                  <a
-                    href="#"
-                    className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
-                  >
-                    <span className="mr-1">
-                      <UserIcon className="w-4" />
-                    </span>
-                    <span className="text-sm text-slate-300">Thành viên</span>
-                  </a>
-                </div>
-
-                <div>
-                  <a
-                    href="#"
-                    className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
-                  >
-                    <span className="mr-1">
-                      <TagIcon className="w-4" />
-                    </span>
-                    <span className="text-sm text-slate-300">Nhãn</span>
-                  </a>
-                </div>
-
-                <div className="relative">
-                  <a
-                    href="#"
-                    className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
-                    onClick={() =>
-                      dispatch(toggleModalAddTask(isOpenModalAddTask))
-                    }
-                  >
-                    <span className="mr-1">
-                      <ClipboardIcon className="w-4" />
-                    </span>
-                    <span className="text-sm text-slate-300">Việc cần làm</span>
-                  </a>
-                  {isOpenModalAddTask && (
-                    <ModalAddTask handleAddTask={handleAddTask} />
-                  )}
-                </div>
-
-                <div>
-                  <a
-                    href="#"
-                    className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
-                    onClick={() => dispatch(openModalDate())}
-                  >
-                    <span className="mr-1">
-                      <ClockIcon className="w-4" />
-                    </span>
-                    <span className="text-sm text-slate-300">Ngày</span>
-                  </a>
-                  {isOpenModalDate && <ModalTimeCard />}
-                </div>
-
-                <div>
-                  <a
-                    href="#"
-                    className="flex items-center w-[138px] bg-[#A1BDD914] mb-2 p-2 rounded-sm cursor-pointer overflow-hidden"
-                  >
-                    <span className="mr-1">
-                      <PaperIcon className="w-4" />
-                    </span>
-                    <span className="text-sm text-slate-300">Đính kèm</span>
-                  </a>
-                </div>
-              </div>
-            </div>
+            <SliderMenu handleAddTask={handleAddTask} />
           </div>
         </div>
       </div>

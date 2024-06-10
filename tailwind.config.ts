@@ -24,6 +24,7 @@ const config: Config = {
         overlay: '#000000a3',
         'surface-overlay': '#282E33',
         input: '#22272B',
+        'btn-tdp': '#A6C5E222',
       },
     },
   },

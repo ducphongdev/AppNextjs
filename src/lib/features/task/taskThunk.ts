@@ -1,20 +1,20 @@
-import { ITask } from '@/types/board.type';
-import { API_ROOT } from '@/utils/constants';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { addTaskByCard } from '../card/cardSlice';
+import http from '@/utils/httpRequest';
 
 export const createNewTask = createAsyncThunk(
   'task/createTask',
   async (dataCreate: any, thunkApi) => {
-    const response = await fetch(`${API_ROOT}/v1/tasks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataCreate),
-    });
-    const result = (await response.json()) as ITask;
-    thunkApi.dispatch(addTaskByCard(result));
-    return result;
+    const response = await http.post(`/v1/tasks`, dataCreate);
+    thunkApi.dispatch(addTaskByCard(response));
+    return response;
+  }
+);
+
+export const deleteTask = createAsyncThunk(
+  'task/deleteTask',
+  async (taskId: string, thunkApi) => {
+    const response = await http.delete(`/v1/tasks/${taskId}`);
+    return response;
   }
 );

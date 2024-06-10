@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react';
 import clsx from 'clsx/lite';
-import moment from 'moment';
+import moment, { duration } from 'moment';
 import dayjs from 'dayjs';
 import Button from '../button';
 import { CloseIcon } from '../icons';
-import { Calendar, Col, DatePicker, Radio, Row, Select } from 'antd';
+import { DatePicker } from 'antd';
 import dayLocaleData from 'dayjs/plugin/localeData';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
 import { updateCardDetails } from '@/lib/features/card/cardThunk';
-import { closeModalDate } from '@/lib/features/modal/modalSlice';
 import {
-  setIsAlmostExpired,
-  setIsCompletionDeadline,
-  resetIsTaskStatus,
-} from '@/lib/features/dateTask/dateTaskSlice';
+  closeModalDate,
+  setModalTimeCard,
+} from '@/lib/features/modal/modalSlice';
+
+interface IModalTimeCardProps {
+  handleClose?: () => void;
+}
 
 dayjs.extend(dayLocaleData);
-function ModalTimeCard() {
+function ModalTimeCard({ handleClose }: IModalTimeCardProps) {
   const [isDisableDateStart, setIsDisableDateStart] = useState<boolean>(false);
   const [isDisableDateDue, setIsDisableDateDue] = useState<boolean>(false);
   const [dateStart, setDateStart] = useState<any>();
@@ -24,21 +26,18 @@ function ModalTimeCard() {
 
   const dispatch = useAppDispatch();
   const { card } = useAppSelector((state) => state.card);
-  // const { start, due } = useAppSelector((state) => state.dateTask);
 
   useEffect(() => {
-    // Kiểm tra xem card?.start có tồn tại và có đúng định dạng không
     if (card?.start && moment(card.start).isValid()) {
       setDateStart(dayjs(card.start));
     } else {
-      setDateStart(''); // hoặc để giá trị rỗng tùy vào yêu cầu của bạn
+      setDateStart('');
     }
 
-    // Tương tự cho dateEnd
     if (card?.due && moment(card.due).isValid()) {
       setDateEnd(dayjs(card.due));
     } else {
-      setDateEnd(''); // hoặc để giá trị rỗng tùy vào yêu cầu của bạn
+      setDateEnd('');
     }
   }, [card]);
 
@@ -46,7 +45,6 @@ function ModalTimeCard() {
     e.preventDefault();
     const start = !isDisableDateStart ? dateStart : '';
     const due = !isDisableDateDue ? dateEnd : '';
-
     dispatch(
       updateCardDetails({
         cardId: card?._id,
@@ -56,6 +54,7 @@ function ModalTimeCard() {
         },
       })
     );
+    dispatch(setModalTimeCard(false));
   };
 
   const handleRemoveDate = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -66,6 +65,7 @@ function ModalTimeCard() {
         dataUpdate: {
           start: '',
           due: '',
+          dueComplete: false,
         },
       })
     );
@@ -74,14 +74,11 @@ function ModalTimeCard() {
   };
 
   return (
-    <div className="absolute top-[170px] right-0 w-[350px] mr-1 bg-[#282E33] rounded-lg z-40">
+    <div className="w-[350px]">
       <div className="p-5">
         <header className="px-2 flex items-center">
           <h2 className="flex-1 text-center text-base text-zinc-400">Ngày</h2>
-          <Button
-            onClick={() => dispatch(closeModalDate())}
-            className="ml-auto cursor-pointer"
-          >
+          <Button onClick={handleClose} className="ml-auto cursor-pointer">
             <CloseIcon className="h-5" />
           </Button>
         </header>

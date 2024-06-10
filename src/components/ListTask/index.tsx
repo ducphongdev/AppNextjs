@@ -15,13 +15,15 @@ import {
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '@/lib/hooks/useReduxHooks';
 import { updateCardDetails } from '@/lib/features/card/cardThunk';
-import { ICard, ITask } from '@/types/board.type';
-import { updateCard } from '@/lib/features/card/cardSlice';
+import { ITask } from '@/types/board.type';
+import { updateTasksOrderedIds } from '@/lib/features/card/cardSlice';
+import { useSensors } from '@/lib/hooks/useSensors';
 
 function ListTask({ card }: { card: any }) {
   const [orderTasks, setOrderTasks] = useState([]);
   const [activeDragItemData, setActiveDragItemData] = useState<any>(null);
   const [activeDragItemId, setActiveDragItemId] = useState<any>(null);
+  const sensors = useSensors();
   const dispatch = useAppDispatch();
 
   const dropAnimation: DropAnimation = {
@@ -44,7 +46,7 @@ function ListTask({ card }: { card: any }) {
     const dndOrderedTasksIds = dndOrderedTasks.map((c: any) => c._id);
 
     dispatch(
-      updateCard({
+      updateTasksOrderedIds({
         dndOrderedTasks,
         dndOrderedTasksIds,
       })
@@ -81,7 +83,11 @@ function ListTask({ card }: { card: any }) {
     setActiveDragItemData(null);
   };
   return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
       <SortableContext
         items={orderTasks?.map((c: any) => c._id)}
         strategy={verticalListSortingStrategy}

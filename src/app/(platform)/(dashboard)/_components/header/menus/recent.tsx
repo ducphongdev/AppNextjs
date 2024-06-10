@@ -2,8 +2,8 @@ import { ArrowRightIcon, DownIcon } from '@/components/icons';
 
 function Recent() {
   return (
-    <div className="group py-2 px-3 cursor-pointer relative hover:bg-slate-400 my-1">
-      <div className="group-hover:bg-slate-400 rounded-sm flex justify-center items-center">
+    <div className="group py-2 px-3 cursor-pointer relative hover:bg-btn-tdp my-1 rounded-sm">
+      <div className="group-hover:text-white rounded-sm flex justify-center items-center">
         <span className="text-sm font-semibold text-gray-600 dark:text-gray-300">
           Gần đây
         </span>

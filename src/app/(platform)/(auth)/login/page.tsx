@@ -5,10 +5,12 @@ import Another from '../_component/Another';
 import { loginAuth } from '@/lib/features/auth/authThunk';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
 import { ErrorIcon } from '@/components/icons';
+import Link from 'next/link';
 
 function Login() {
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
+
   const { isError } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -20,10 +22,10 @@ function Login() {
         email,
         password,
       })
-    ).then(({ payload }) => {
+    ).then(({ payload }: { payload: any }) => {
       if (payload) {
-        setEmail('');
-        setPassword('');
+        // setEmail('');
+        // setPassword('');
         router.push(`/organization/${payload?.displayName}`);
       }
     });
@@ -90,9 +92,9 @@ function Login() {
             </a>
           </li>
           <li className="text-sm text-sky-500">
-            <a href="" className="cursor-pointer">
+            <Link href="/signup" className="cursor-pointer">
               Đăng ký tài khoản
-            </a>
+            </Link>
           </li>
         </ul>
       </div>

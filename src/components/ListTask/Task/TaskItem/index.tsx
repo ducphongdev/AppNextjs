@@ -1,15 +1,17 @@
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import Button from '@/components/button';
-import { EllipsisHorizontalIcon } from '@/components/icons';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
 import { cancelEdit, startEdit } from '@/lib/features/modal/modalSlice';
-import { useState } from 'react';
+import { updateCardByBoard } from '@/lib/features/board/boardSlice';
 import { updateTaskItem } from '@/lib/features/taskItem/taskItemThunk';
 import { ITaskItem } from '@/types/board.type';
+import Button from '@/components/button';
+import { EllipsisHorizontalIcon } from '@/components/icons';
 
 function TaskItem({ taskItem }: { taskItem: any }) {
   const [titleTaskItem, setTitleTaskItem] = useState<string>();
   const { editing } = useAppSelector((state) => state.modal);
+  const { card } = useAppSelector((state) => state.card);
   const dispatch = useAppDispatch();
 
   const handleUpdateStatusTaskItem = (
@@ -38,6 +40,10 @@ function TaskItem({ taskItem }: { taskItem: any }) {
     }
   };
 
+  useEffect(() => {
+    dispatch(updateCardByBoard(card));
+  }, [card]);
+
   const handleUpdateTaskItem = () => {
     dispatch(
       updateTaskItem({
@@ -49,12 +55,12 @@ function TaskItem({ taskItem }: { taskItem: any }) {
     );
     dispatch(cancelEdit());
   };
-
   return (
     <div className="relative flex items-center mb-2">
       <span className="absolute top-1 left-[-30px]">
         <input
           type="checkbox"
+          checked={taskItem?.state === 'complete'}
           className="h-4 w-4 cursor-pointer bg-[#22272B] border-none rounded-sm shadow-dp-input"
           onChange={(e) => handleUpdateStatusTaskItem(e, taskItem)}
         />
@@ -71,7 +77,7 @@ function TaskItem({ taskItem }: { taskItem: any }) {
             setTitleTaskItem(taskItem?.title);
           }}
           className={clsx(
-            ' hide-on-edit flex justify-between items-center  rounded-lg hover:bg-[#A6C5E229]',
+            ' hide-on-edit flex justify-between items-center py-1 px-2  rounded-lg hover:bg-[#A6C5E229]',
             taskItem?.state === 'complete' && 'checklist-item-state-complete'
           )}
         >
@@ -79,7 +85,10 @@ function TaskItem({ taskItem }: { taskItem: any }) {
             {taskItem?.title}
           </span>
           <div className="flex justify-center items-center">
-            <Button>
+            <Button
+              onClick={(e) => e.stopPropagation()}
+              className="bg-btn-tdp rounded-full w-6 h-6 ml-2"
+            >
               <EllipsisHorizontalIcon className="w-4" />
             </Button>
           </div>
@@ -102,7 +111,7 @@ function TaskItem({ taskItem }: { taskItem: any }) {
             </button>
             <button
               onClick={() => dispatch(cancelEdit())}
-              className="text-sm rounded-sm hover:bg-[#A6C5E229] mx-2 px-3 py-1"
+              className="text-sm rounded-sm hover:bg-btn-tdp mx-2 px-3 py-1"
             >
               Hủy
             </button>

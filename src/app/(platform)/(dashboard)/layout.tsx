@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Providers } from '../../providers';
 import Header from './_components/header';
+import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Table',
@@ -15,7 +16,7 @@ export default function RootLayout({
   return (
     <>
       <Providers>
-        <div className="flex flex-col overflow-hidden h-screen bg-[#ffff] dark:bg-[#1d2125]">
+        <div className="flex flex-col relative overflow-hidden h-screen bg-[#ffff] dark:bg-[#1d2125]">
           <Header />
           <div className="w-full h-full">{children}</div>
         </div>

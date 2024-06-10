@@ -1,12 +1,14 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-import { BarsLeftIcon, ClockIcon } from '@/components/icons';
+import { BarsLeftIcon, ClipboardIcon, ClockIcon } from '@/components/icons';
 import { ICard } from '@/types/board.type';
-import Button from '@/components/button';
 import { useAppDispatch } from '@/lib/hooks/useReduxHooks';
-import { openModalToolbar } from '@/lib/features/modal/modalSlice';
+import { toggleModalToolBar } from '@/lib/features/modal/modalSlice';
 import { fetchCardById } from '@/lib/features/card/cardThunk';
+import { convertDate } from '@/utils/formatter';
+import { useEffect, useRef } from 'react';
+import handleNotificationStatus from '@/utils/notificationStatus';
 
 interface CardProps {
   card: ICard | null;
@@ -24,7 +26,9 @@ function Card({ card }: CardProps) {
     id: card?._id as string,
     data: { ...card },
   });
+  const dateRef = useRef<null | HTMLSpanElement>(null);
   const dispatch = useAppDispatch();
+  const { taskItemsChecked, taskItems } = card?.badges || {};
 
   const style = {
     touchAction: 'none',
@@ -35,10 +39,28 @@ function Card({ card }: CardProps) {
     borderRadius: isDragging ? '8px' : undefined,
   } as React.CSSProperties;
 
+  const isExpired = handleNotificationStatus(card);
+
   const handleOpenModalToolbar = (card: ICard | null) => {
-    dispatch(openModalToolbar());
+    dispatch(toggleModalToolBar(true));
     dispatch(fetchCardById(card?._id));
   };
+
+  useEffect(() => {
+    const dateElement = dateRef.current as HTMLSpanElement;
+    const dateStart = convertDate(card?.start, 'DD/MM/YY');
+    const dateDue = convertDate(card?.due, 'DD/MM/YY');
+
+    if (dateElement) {
+      if (dateStart && dateDue) {
+        dateElement.innerText = `${dateStart} - ${dateDue}`;
+      } else if (dateStart) {
+        dateElement.innerText = dateStart;
+      } else {
+        dateElement.innerText = dateDue;
+      }
+    }
+  }, [card]);
 
   return (
     <li
@@ -66,23 +88,53 @@ function Card({ card }: CardProps) {
             {card?.title}
           </a>
         </div>
-        <div className="flex justify-around items-center pb-2">
-          <span className="flex justify-between items-center">
-            <span>
-              <ClockIcon className="w-4 mr-1" />
+        <div className="flex items-center flex-wrap gap-1 pb-2 px-3">
+          {card?.badges?.start || card?.badges?.due ? (
+            <span
+              className={`flex justify-between items-center p-2 py-1 rounded-sm ${
+                (card?.dueComplete && 'bg-green-600') ||
+                (isExpired && 'bg-red-400')
+              }`}
+            >
+              <span>
+                <ClockIcon className="text-complete w-4 mr-1 text-slate-300" />
+              </span>
+              <span
+                ref={dateRef}
+                className="text-complete text-xs text-slate-300"
+              ></span>
             </span>
-            <span className="text-xs">24 Th01 2024 - 25 Th01 2024</span>
-          </span>
+          ) : (
+            ''
+          )}
 
-          <span>
-            <BarsLeftIcon className="w-4" />
-          </span>
-          <span></span>
+          {card?.badges?.description && (
+            <span>
+              <BarsLeftIcon className="w-4" />
+            </span>
+          )}
+
+          {card?.badges?.taskItems ? (
+            <span
+              className={`flex items-center rounded-sm p-1 ml-1 ${
+                taskItemsChecked === taskItems ? 'bg-green-wrapper' : ''
+              }`}
+            >
+              <span>
+                <ClipboardIcon className="text-complete w-4 text-slate-300" />
+              </span>
+              <span className="text-complete text-xs text-slate-300">
+                {`${taskItemsChecked}/${taskItems}`}
+              </span>
+            </span>
+          ) : (
+            ''
+          )}
         </div>
         {/* <div className="px-2">
-          <Button className="ml-2 hover:rounded-full float-right my-1 relative rounded-full">
+          <div className="ml-2 hover:rounded-full float-right my-1 relative rounded-full">
             <span className="absolute top-0 bg-[url('https://trello-members.s3.amazonaws.com/65308a6d53b5d525b1ffd4ca/f7d876d63789b6fb53d17741c2f417c2/50.png')] w-full h-full bg-white bg-cover rounded-t-md"></span>
-          </Button>
+          </div>
         </div> */}
       </div>
     </li>

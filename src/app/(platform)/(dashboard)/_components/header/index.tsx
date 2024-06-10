@@ -52,15 +52,15 @@ function Header() {
             placeholder="Tìm kiếm"
           />
         </div>
-        <Button className="ml-2 hover:rounded-full">
-          <BellIcon className="w-6 text-gray-600 dark:text-gray-300 hover:text-[#9FADBD]" />
+        <Button className="ml-2 rounded-full">
+          <BellIcon className="w-6 text-gray-600 dark:text-gray-300 hover:text-white" />
         </Button>
 
-        <Button className="ml-2 hover:rounded-full">
-          <QuestionMarkIcon className="w-6 text-gray-600 dark:text-gray-300 group-hover:text-gray-500" />
+        <Button className="ml-2 rounded-full">
+          <QuestionMarkIcon className="w-6 text-gray-600 dark:text-gray-300  hover:text-white" />
         </Button>
 
-        <Button className="ml-2 relative hover:rounded-full">
+        <Button className="ml-2 relative rounded-full">
           <Image
             className={'rounded-full'}
             src={user?.avatar}

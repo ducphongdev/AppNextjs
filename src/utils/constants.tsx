@@ -1,4 +1,6 @@
-export const API_ROOT = 'http://localhost:8017';
+import { env } from '@/config/environment';
+
+export const API_ROOT = env.API_ENDPOINT;
 
 export const API_ROOT_PHOTO = 'https://trello.com';
 

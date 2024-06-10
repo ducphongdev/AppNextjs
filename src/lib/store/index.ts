@@ -5,7 +5,6 @@ import cardReducer from '@/lib/features/card/cardSlice';
 import taskItemReducer from '@/lib/features/taskItem/taskItemSlice';
 import authReducer from '@/lib/features/auth/authSlice';
 import modalReducer from '@/lib/features/modal/modalSlice';
-import dateTaskReducer from '@/lib/features/dateTask/dateTaskSlice';
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +14,6 @@ export const store = configureStore({
     taskItem: taskItemReducer,
     auth: authReducer,
     modal: modalReducer,
-    dateTask: dateTaskReducer,
   },
 });
 

@@ -15,8 +15,8 @@ interface ListColumnProps {
 }
 
 interface addNewColumnProps {
-  title: FormDataEntryValue | null;
-  boardId: any;
+  title: string;
+  boardId: string | undefined;
 }
 
 function ListColumns({ columns }: ListColumnProps) {
@@ -41,8 +41,10 @@ function ListColumns({ columns }: ListColumnProps) {
       title: title,
       boardId: board?._id,
     };
+
     dispatch(createNewColumn(addNewColumn));
     setTitle('');
+    setOpenNewColumnForm(false);
   };
 
   return (

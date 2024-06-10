@@ -10,21 +10,19 @@ import {
   DragStartEvent,
   DropAnimation,
   defaultDropAnimationSideEffects,
-  useSensor,
-  useSensors,
   UniqueIdentifier,
   pointerWithin,
   getFirstCollision,
   ClientRect,
   Active,
   closestCorners,
+  Collision,
 } from '@dnd-kit/core';
 import { Coordinates } from '@dnd-kit/utilities';
 import {
   moveCardToDifferentColumn,
   updateBoardDetails,
 } from '@/lib/features/board/boardThunk';
-import { MouseSensor, TouchSensor } from '@/lib/dndkit-sensor';
 import { useAppDispatch } from '@/lib/hooks/useReduxHooks';
 import { updateBoard } from '@/lib/features/board/boardSlice';
 import { updateColumnDetails } from '@/lib/features/column/columnThunk';
@@ -34,14 +32,10 @@ import Column from './list-columns/column/column';
 import Card from './list-columns/column/list-cards/card/card';
 import { DroppableContainer, RectMap } from '@dnd-kit/core/dist/store';
 import { generatePlaceholderCard } from '@/utils/formatter';
+import { useSensors } from '@/lib/hooks/useSensors';
 
 interface ListBoardProps {
   board: IBoard | null;
-}
-
-interface IMoveColumn {
-  map(arg0: (c: any) => any): unknown;
-  dndOrderedColumns: IColumn[];
 }
 
 const ACTIVE_DRAG_ITEM_TYPE = {
@@ -51,7 +45,6 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 
 function BoardContent({ board }: ListBoardProps) {
   const id = useId();
-
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const [orderColumns, setOrderColumns] = useState<IColumn[]>([]);
   const [activeDragItemId, setActiveDragItemId] =
@@ -62,25 +55,9 @@ function BoardContent({ board }: ListBoardProps) {
   const [activeDragItemData, setActiveDragItemData] = useState<any>(null);
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] =
     useState<IColumn | null>(null);
+  const sensors = useSensors();
 
   const dispatch = useAppDispatch();
-
-  const mouseSensor = useSensor(MouseSensor, {
-    // Require the mouse to move by 10 pixels before activating
-    activationConstraint: {
-      distance: 10,
-    },
-  });
-
-  const touchSensor = useSensor(TouchSensor, {
-    // Press delay of 250ms, with tolerance of 5px of movement
-    activationConstraint: {
-      delay: 250,
-      tolerance: 500,
-    },
-  });
-
-  const sensors = useSensors(mouseSensor, touchSensor);
 
   const dropAnimation: DropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
@@ -241,23 +218,12 @@ function BoardContent({ board }: ListBoardProps) {
     dndOrderedCardIds: any,
     columnId: any
   ) => {
-    // Cập nhật lại state IColumn
-    // const newBoard = { ...board };
-    // const columnToUpdate = newBoard.columns?.find((column) => column._id === columnId);
-    // if (columnToUpdate) {
-    //   columnToUpdate.cards = dndOrderCards;
-    //   columnToUpdate.cardOrderIds = dndOrderedCardIds;
-    // }
-
-    // dispatch(addBoard(newBoard));
-
-    const updateData = {
-      columnId,
-      dndOrderedCardIds,
-    };
-
-    // Update
-    dispatch(updateColumnDetails(updateData));
+    dispatch(
+      updateColumnDetails({
+        columnId,
+        dataUpdate: { cardOrderIds: dndOrderedCardIds },
+      })
+    );
   };
 
   const collisionDetectionStrategy = useCallback(
@@ -267,15 +233,17 @@ function BoardContent({ board }: ListBoardProps) {
       droppableRects: RectMap;
       droppableContainers: DroppableContainer[];
       pointerCoordinates: Coordinates | null;
-    }) => {
+    }): Collision[] => {
       if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
-        return closestCorners({ ...args });
+        return closestCorners({ ...args }) || [];
       }
 
       // Tìm các điểm giao nhau và va chạm với con trỏ
       const pointerIntersections = pointerWithin(args);
 
-      if (!pointerIntersections?.length) return;
+      if (!pointerIntersections?.length) {
+        return [];
+      }
 
       let overId = getFirstCollision(pointerIntersections, 'id');
 
@@ -300,7 +268,6 @@ function BoardContent({ board }: ListBoardProps) {
         }
       }
 
-      // Nếu overId null thì trả về mảng rỗng - tránh bug crash trang
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
     },
     [orderColumns, activeDragItemType]

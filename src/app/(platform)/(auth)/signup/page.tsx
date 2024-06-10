@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Another from '../_component/Another';
 
 function SignUp() {
@@ -17,7 +18,11 @@ function SignUp() {
               />
             </div>
             <div className="mb-3">
-              <input type="text" placeholder="Password" className="border-[1px] w-full px-2 py-2" />
+              <input
+                type="password"
+                placeholder="Password"
+                className="border-[1px] w-full px-2 py-2"
+              />
             </div>
             <input
               value="Tiếp tục"
@@ -31,7 +36,9 @@ function SignUp() {
         <hr className="h-[1px] w-full bg-gray-400 my-5" />
         <ul className="flex justify-center items-center">
           <li className="text-sm text-sky-500 pr-2">Không thể đăng nhập?</li>
-          <li className="text-sm text-sky-500">Đăng nhập tài khoản</li>
+          <li className="text-sm text-sky-500">
+            <Link href={'/login'}>Đăng nhập tài khoản</Link>
+          </li>
         </ul>
       </div>
     </div>

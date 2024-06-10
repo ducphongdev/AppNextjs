@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -7,8 +7,16 @@ import { ClipboardIcon } from '@/components/icons';
 import TaskItem from './TaskItem';
 import { useAppDispatch } from '@/lib/hooks/useReduxHooks';
 import { createNewTaskItem } from '@/lib/features/taskItem/taskItemThunk';
-import { cancelEdit } from '@/lib/features/modal/modalSlice';
+import {
+  cancelEdit,
+  // toggleModalConfirmModal,
+} from '@/lib/features/modal/modalSlice';
 import { useClickAway } from '@/lib/hooks/useClickAway';
+import ConfirmDelete from '@/components/ConfirmDelete';
+import PopOver from '@/lib/PopOver';
+import { deleteTask } from '@/lib/features/task/taskThunk';
+import { deleteTaskByCard } from '@/lib/features/card/cardSlice';
+// import ConfirmDelete from '@/components/ConfirmDelete';
 
 function Task({ task }: { task: any }) {
   const {
@@ -22,6 +30,8 @@ function Task({ task }: { task: any }) {
 
   const [isOpenAddTask, setIsOpenAddTask] = useState<boolean>(false);
   const [titleTaskItem, setTitleTaskItem] = useState<string>();
+  const [isOpen, setIsOpen] = useState(false);
+
   const dispatch = useAppDispatch();
   const style = {
     touchAction: 'none',
@@ -31,7 +41,17 @@ function Task({ task }: { task: any }) {
     opacity: isDragging ? 0.5 : null,
     borderRadius: '6px',
   } as React.CSSProperties;
-  const ref = useClickAway(() => setIsOpenAddTask(false));
+
+  const elAddTaskRef = useClickAway(() => setIsOpenAddTask(false));
+
+  const handleOpenModal = () => setIsOpen(!isOpen);
+  const handleCloseModal = () => setIsOpen(false);
+  const handleVisibleChange = (isOpen: boolean) => setIsOpen(isOpen);
+
+  const handleDeleteTask = () => {
+    dispatch(deleteTaskByCard(task?._id));
+    dispatch(deleteTask(task?._id));
+  };
 
   const handleAddTaskItem = () => {
     dispatch(
@@ -58,9 +78,26 @@ function Task({ task }: { task: any }) {
         <h3 className="text-sm text-slate-300 mb-1 ml-2">{task?.title}</h3>
         <div className="flex flex-1 justify-between items-center">
           <div></div>
-          <Button size="inline" variant="box">
-            Xóa
-          </Button>
+          <PopOver
+            content={
+              <ConfirmDelete
+                handleCloseModal={handleCloseModal}
+                handleDeleteTask={handleDeleteTask}
+              />
+            }
+            placement="bottomLeft"
+            open={isOpen}
+            onChange={handleVisibleChange}
+          >
+            <Button
+              onClick={handleOpenModal}
+              size="inline"
+              variant="box"
+              data-no-dnd={true}
+            >
+              Xóa
+            </Button>
+          </PopOver>
         </div>
       </div>
 
@@ -69,7 +106,7 @@ function Task({ task }: { task: any }) {
       ))}
 
       <div
-        ref={ref}
+        ref={elAddTaskRef}
         className={clsx('cursor-default mt-2', isOpenAddTask && 'editing')}
       >
         <Button
@@ -77,8 +114,6 @@ function Task({ task }: { task: any }) {
           variant={'box'}
           className="text-slate-300 text-sm hide-on-edit"
           onClick={() => {
-            console.log('rerender');
-
             setIsOpenAddTask(true);
             dispatch(cancelEdit());
           }}

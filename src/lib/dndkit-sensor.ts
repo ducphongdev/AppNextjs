@@ -1,4 +1,8 @@
-import { MouseSensor as LibMouseSensor, TouchSensor as LibTouchSensor } from '@dnd-kit/core';
+import {
+  MouseSensor as LibMouseSensor,
+  TouchSensor as LibTouchSensor,
+  PointerSensor as LibPointerSensor,
+} from '@dnd-kit/core';
 import { MouseEvent, TouchEvent } from 'react';
 
 // Block DnD event propagation if element have "data-no-dnd" attribute
@@ -24,4 +28,9 @@ export class TouchSensor extends LibTouchSensor {
   static activators = [
     { eventName: 'onTouchStart', handler },
   ] as (typeof LibTouchSensor)['activators'];
+}
+export class PointerSensor extends LibPointerSensor {
+  static activators = [
+    { eventName: 'onPointerDown', handler },
+  ] as (typeof LibPointerSensor)['activators'];
 }

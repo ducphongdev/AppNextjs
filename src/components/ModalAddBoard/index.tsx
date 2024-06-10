@@ -5,12 +5,8 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
 import Button from '../button';
 import { CloseIcon, DownIcon, GlobeIcon, LockIcon } from '../icons';
 import { createBoard } from '@/lib/features/board/boardThunk';
-import {
-  closeModalAddBoard,
-  toggleAddBoard,
-} from '@/lib/features/modal/modalSlice';
+import { toggleAddBoard } from '@/lib/features/modal/modalSlice';
 import { photos } from '@/app/_api/mock-data';
-import { fetchBackdropPhotos } from '@/services/collections';
 
 function ModalAddBoard({ nameUser }: { nameUser: { organizationId: string } }) {
   const ulRef: MutableRefObject<HTMLUListElement | null> = useRef(null);
@@ -56,7 +52,7 @@ function ModalAddBoard({ nameUser }: { nameUser: { organizationId: string } }) {
     };
 
     dispatch(createBoard(newBoard));
-    dispatch(toggleAddBoard(isOpenModalAddBoard));
+    dispatch(toggleAddBoard(false));
   };
 
   const handleSelectBackground = (item: any, i: number) => {
@@ -72,7 +68,7 @@ function ModalAddBoard({ nameUser }: { nameUser: { organizationId: string } }) {
             Tạo bảng
           </h2>
           <Button
-            onClick={() => dispatch(closeModalAddBoard())}
+            onClick={() => dispatch(toggleAddBoard(false))}
             className="ml-auto cursor-pointer"
           >
             <CloseIcon className="h-5" />

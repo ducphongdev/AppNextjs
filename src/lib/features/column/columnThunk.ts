@@ -1,39 +1,26 @@
-import { API_ROOT } from '@/utils/constants';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-
-import { IColumn } from '@/types/board.type';
 import { addColumnByBoard } from '../board/boardSlice';
+import http from '@/utils/httpRequest';
+
+interface INewColumnProps {
+  title: string;
+  boardId: string | undefined;
+}
 
 export const createNewColumn = createAsyncThunk(
   'column/createColumn',
-  async (newColumnData, thunkApi) => {
-    const response = await fetch(`${API_ROOT}/v1/columns`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newColumnData),
-    });
-    const result = (await response.json()) as IColumn;
-    thunkApi.dispatch(addColumnByBoard(result));
-    return result;
+  async (newColumnData: INewColumnProps, thunkApi) => {
+    const response = await http.post(`/v1/columns`, newColumnData);
+    thunkApi.dispatch(addColumnByBoard(response));
+    return response;
   }
 );
 
 export const updateColumnDetails = createAsyncThunk(
   'column/updateColumnDetails',
   async (updateData: any, thunkApi) => {
-    const { columnId, dndOrderedCardIds: cardOrderIds } = updateData;
-
-    const response = await fetch(`${API_ROOT}/v1/columns/${columnId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ cardOrderIds }),
-    });
-    const result = (await response.json()) as IColumn;
-    // thunkApi.dispatch(addColumnByBoard(result));
-    return result;
+    const { columnId, dataUpdate } = updateData;
+    const response = await http.put(`/v1/columns/${columnId}`, dataUpdate);
+    return response;
   }
 );

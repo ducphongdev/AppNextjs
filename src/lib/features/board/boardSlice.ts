@@ -54,11 +54,29 @@ export const boardSlice = createSlice({
     },
 
     addColumnByBoard: (state, { payload }) => {
+      if (payload) return;
       payload.cards = [generatePlaceholderCard(payload)];
       payload.cardOrderIds = [generatePlaceholderCard(payload)._id];
 
       state.boards?.columnOrderIds.push(payload._id);
       state.boards?.columns.push(payload);
+    },
+    updateCardByBoard: (state, { payload }) => {
+      const newBoard = { ...state.boards };
+      const columnToUpdate = newBoard?.columns?.find(
+        (column) => column._id === payload.columnId
+      );
+
+      if (columnToUpdate) {
+        const cardToIndex = columnToUpdate.cards.findIndex(
+          (card) => card._id === payload._id
+        );
+
+        if (cardToIndex !== -1) {
+          columnToUpdate.cards[cardToIndex] = payload;
+          state.boards = newBoard as IBoard;
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -123,7 +141,11 @@ export const boardSlice = createSlice({
   },
 });
 
-export const { updateBoard, addCardByBoard, addColumnByBoard } =
-  boardSlice.actions;
+export const {
+  updateBoard,
+  addCardByBoard,
+  addColumnByBoard,
+  updateCardByBoard,
+} = boardSlice.actions;
 
 export default boardSlice.reducer;

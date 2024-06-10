@@ -10,12 +10,22 @@ export interface ITask {
   boardId: string;
   cardId: string;
   title: string;
+  taskItems: ITaskItem[];
   taskItemOrderId: string[];
 }
 export interface ICard {
   _id: string;
   boardId: string;
   columnId: string;
+  badges?: {
+    description: boolean;
+    taskItems: number;
+    taskItemsChecked: number;
+    comments: number;
+    start: string;
+    due: string;
+    duComplete: boolean;
+  };
   title?: string;
   description?: string | null;
   cover?: string | null;
@@ -63,6 +73,6 @@ export interface AuthState {
   isLoading: boolean;
   isError: boolean;
   messageError: string | undefined;
-  user: {} | IUser;
+  user: IUser;
 }
 export type Items = IColumn | ICard;

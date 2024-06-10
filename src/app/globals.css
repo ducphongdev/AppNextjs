@@ -65,6 +65,13 @@ html *::-webkit-scrollbar-track {
   @apply text-slate-500 line-through !important;
 }
 
+.bg-green-wrapper {
+  @apply bg-green-600;
+}
+
+.bg-green-wrapper .text-complete {
+  @apply text-slate-900 font-semibold !important;
+}
 .opacity-active > div::before {
   background: #a69e9ea3;
   position: absolute;

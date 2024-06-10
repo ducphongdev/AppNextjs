@@ -1,13 +1,10 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect } from 'react';
 import { ClockIcon, StarIcon } from '@/components/icons';
 import { fetchAllBoardOfUser } from '@/lib/features/board/boardThunk';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/useReduxHooks';
-import {
-  closeModalAddBoard,
-  toggleAddBoard,
-} from '@/lib/features/modal/modalSlice';
+import { toggleAddBoard } from '@/lib/features/modal/modalSlice';
 import ModalAddBoard from '@/components/ModalAddBoard';
 import { useClickAway } from '@/lib/hooks/useClickAway';
 
@@ -21,7 +18,7 @@ function OrganizationIdPage({
 
   const dispatch = useAppDispatch();
   const ref = useClickAway(() => {
-    dispatch(closeModalAddBoard());
+    dispatch(toggleAddBoard(false));
   });
 
   useEffect(() => {
@@ -29,7 +26,7 @@ function OrganizationIdPage({
   }, [params?.organizationId]);
 
   const handleOpenModalAddBoard = () => {
-    dispatch(toggleAddBoard(isOpenModalAddBoard));
+    dispatch(toggleAddBoard());
   };
   return (
     <>
@@ -47,7 +44,7 @@ function OrganizationIdPage({
             <ul className="flex flex-wrap justify-start max-w-[825px] w-full">
               <li className="mb-4 mr-3 w-[23.3%]">
                 <a
-                  href=""
+                  href="#"
                   className="relative block bg-pink-600 w-full h-24 rounded-md group"
                 >
                   <span className="absolute inset-0 bg-[#00000026] p-2">
