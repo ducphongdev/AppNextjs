@@ -71,12 +71,12 @@ export const cardSlice = createSlice({
 
       const updatedCard = {
         ...card,
-        tasks: card?.tasks.map((task: ITask) =>
+        tasks: card?.tasks?.map((task: ITask) =>
           task._id !== taskId
             ? task
             : {
                 ...task,
-                taskItems: task.taskItems.map((taskItem: ITaskItem) =>
+                taskItems: task.taskItems?.map((taskItem: ITaskItem) =>
                   taskItem._id !== taskItemId
                     ? taskItem
                     : { ...taskItem, ...payload }

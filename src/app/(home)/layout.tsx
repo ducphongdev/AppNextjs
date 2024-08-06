@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="dark:bg-white">
       <Header />
       <section>{children}</section>
       <Footer />

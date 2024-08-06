@@ -16,7 +16,11 @@ function Board({ params }: { params: { boardId: string } }) {
   const { card } = useAppSelector((state) => state.card);
 
   useEffect(() => {
-    dispatch(fetchBoardById(params.boardId));
+    dispatch(
+      fetchBoardById({
+        boardId: params?.boardId,
+      })
+    );
   }, [dispatch]);
 
   const isExpired = handleNotificationStatus(card);

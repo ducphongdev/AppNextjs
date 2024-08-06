@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Another from '../_component/Another';
+import Another from '../_component/another';
 
 function SignUp() {
   return (

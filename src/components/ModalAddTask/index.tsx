@@ -24,7 +24,10 @@ function ModalAddTask({
           <h2 className="flex-1 text-center text-sm text-zinc-400">
             Thêm danh sách công việc
           </h2>
-          <Button onClick={handleClose} className="ml-auto cursor-pointer">
+          <Button
+            onClick={handleClose}
+            className="ml-auto cursor-pointer rounded-md"
+          >
             <CloseIcon className="h-5" />
           </Button>
         </header>

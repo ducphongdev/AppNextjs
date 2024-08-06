@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.4.0",
     "@atlaskit/eslint-plugin-design-system": "^8.36.2",
     "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/sortable": "^7.0.0",

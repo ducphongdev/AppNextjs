@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import { Providers } from '../../providers';
+import { Providers } from '../../ThemeProvider';
 import Header from './_components/header';
-import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Table',

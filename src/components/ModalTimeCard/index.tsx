@@ -78,8 +78,11 @@ function ModalTimeCard({ handleClose }: IModalTimeCardProps) {
       <div className="p-5">
         <header className="px-2 flex items-center">
           <h2 className="flex-1 text-center text-base text-zinc-400">Ngày</h2>
-          <Button onClick={handleClose} className="ml-auto cursor-pointer">
-            <CloseIcon className="h-5" />
+          <Button
+            onClick={handleClose}
+            className="ml-auto cursor-pointer rounded-md"
+          >
+            <CloseIcon className="h-5 text-gray-200" />
           </Button>
         </header>
         <div>

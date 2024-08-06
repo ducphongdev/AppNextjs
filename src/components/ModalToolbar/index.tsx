@@ -24,6 +24,8 @@ import Comment from '../Comment';
 import SliderMenu from '../SliderMenu';
 import PopOver from '@/lib/PopOver';
 import ModalTimeCard from '../ModalTimeCard';
+import { URL_IMG_DEFAULT } from '@/utils/constants';
+import { PlusOutlined } from '@ant-design/icons';
 
 function ModalToolbar({ isExpired }: { isExpired: boolean }) {
   const [isOpenDescription, setIsOpenDescription] = useState<boolean>(false);
@@ -131,7 +133,7 @@ function ModalToolbar({ isExpired }: { isExpired: boolean }) {
             className="absolute top-2 right-2 cursor-pointer"
             href="#"
           >
-            <CloseIcon className="w-6" />
+            <CloseIcon className="w-6 text-gray-200" />
           </a>
           <div className="min-h-[415px] rounded-lg bg-[#A1BDD914] after:clear-both after:table">
             <div className="min-h-8 items-center py-2 pl-14 pr-[52px]">
@@ -164,9 +166,13 @@ function ModalToolbar({ isExpired }: { isExpired: boolean }) {
                     <Button className="relative hover:rounded-full">
                       <Image
                         className={'rounded-full'}
-                        fallBack="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg"
+                        src={undefined}
+                        fallBack={URL_IMG_DEFAULT}
                         alt="anh user"
                       />
+                    </Button>
+                    <Button variant={'box'} className="rounded-full">
+                      <PlusOutlined />
                     </Button>
                   </div>
                 </div>
@@ -286,13 +292,13 @@ function ModalToolbar({ isExpired }: { isExpired: boolean }) {
                       <div className="flex items-center">
                         <button
                           onClick={handleSaveDescription}
-                          className="bg-sky-600 text-black text-sm font-semibold px-3 py-1 rounded-sm"
+                          className="bg-sky-600 text-slate-200 text-sm font-semibold px-3 py-1 rounded-sm hover:bg-sky-500"
                         >
                           Lưu
                         </button>
                         <button
                           onClick={handleCloseDescription}
-                          className="text-sm rounded-sm hover:bg-[#A6C5E229] mx-2 px-3 py-1"
+                          className="text-sm text-slate-200 rounded-sm mx-2 px-3 py-1 hover:bg-[#A6C5E229]"
                         >
                           Hủy
                         </button>

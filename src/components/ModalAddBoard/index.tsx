@@ -7,6 +7,7 @@ import { CloseIcon, DownIcon, GlobeIcon, LockIcon } from '../icons';
 import { createBoard } from '@/lib/features/board/boardThunk';
 import { toggleAddBoard } from '@/lib/features/modal/modalSlice';
 import { photos } from '@/app/_api/mock-data';
+import { useSession } from 'next-auth/react';
 
 function ModalAddBoard({ nameUser }: { nameUser: { organizationId: string } }) {
   const ulRef: MutableRefObject<HTMLUListElement | null> = useRef(null);
@@ -51,7 +52,11 @@ function ModalAddBoard({ nameUser }: { nameUser: { organizationId: string } }) {
       prefs: prefs,
     };
 
-    dispatch(createBoard(newBoard));
+    dispatch(
+      createBoard({
+        newBoard,
+      })
+    );
     dispatch(toggleAddBoard(false));
   };
 
@@ -142,7 +147,7 @@ function ModalAddBoard({ nameUser }: { nameUser: { organizationId: string } }) {
                   ref={ulRef}
                   className="hidden absolute left-0 top-11 w-[100%] rounded-sm box-border bg-[#282E33] border-spacing-4 shadow-border-modal"
                 >
-                  {permissionOptions.map((item, index) => (
+                  {permissionOptions?.map((item, index) => (
                     <li
                       onClick={() => handleClickActivePermission(item)}
                       className="flex items-center p-2 rounded-sm hover:bg-[#A6C5E229]"

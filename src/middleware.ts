@@ -1,23 +1,17 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { decodeJWT } from './utils/jwt';
 
 const authPaths = ['/login', '/signup'];
 
 const organizationPathRegex = /^\/organization\/.*$/;
 const boardPathRegex = /^\/board\/.*$/;
 
-// This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const access_token = request.cookies.get('access_token')?.value;
-
-  const decoded = decodeJWT(access_token as string);
+  const access_token = request.cookies.get('next-auth.session-token')?.value;
   // Đăng nhập rồi thì không cho vào login/register nữa
   if (authPaths.some((path) => pathname.startsWith(path)) && access_token) {
-    return NextResponse.redirect(
-      new URL(`/organization/${decoded.name}`, request.url)
-    );
+    return NextResponse.redirect(new URL(`/`, request.url));
   }
   if (
     (boardPathRegex.test(pathname) || organizationPathRegex.test(pathname)) &&

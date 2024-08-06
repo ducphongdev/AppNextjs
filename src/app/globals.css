@@ -112,3 +112,8 @@ html *::-webkit-scrollbar-track {
     color: #fff;
   }
 }
+
+.ant-popover {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}

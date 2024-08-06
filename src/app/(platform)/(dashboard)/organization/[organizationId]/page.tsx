@@ -22,12 +22,15 @@ function OrganizationIdPage({
   });
 
   useEffect(() => {
-    dispatch(fetchAllBoardOfUser(params?.organizationId));
+    dispatch(
+      fetchAllBoardOfUser({
+        userName: params?.organizationId,
+      })
+    );
   }, [params?.organizationId]);
 
-  const handleOpenModalAddBoard = () => {
-    dispatch(toggleAddBoard());
-  };
+  const handleOpenModalAddBoard = () => dispatch(toggleAddBoard());
+
   return (
     <>
       <div className="flex flex-col">

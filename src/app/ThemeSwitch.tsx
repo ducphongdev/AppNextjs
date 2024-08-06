@@ -27,8 +27,6 @@ const ThemeSwitch = () => {
           )}
         </span>
       </span>
-      {/* <button onClick={() => setTheme('light')}>Light Mode</button> */}
-      {/* <button onClick={() => setTheme('dark')}>Dark Mode</button> */}
     </div>
   );
 };

@@ -1,47 +1,40 @@
-import { redirect } from 'next/navigation';
 import { env } from '@/config/environment';
+import { NOT_FOUND_STATUS } from './constants';
 
 type CustomOptions = Omit<RequestInit, 'method'> & {
   baseUrl?: string | undefined;
+  access_token?: string | undefined;
 };
 
-const ENTITY_ERROR_STATUS = 422;
-const AUTHENTICATION_ERROR_STATUS = 401;
-
-type EntityErrorPayload = {
+export type EntityErrorPayload = {
+  status: 422;
   message: string;
-  errors: {
-    field: string;
-    message: string;
-  }[];
 };
 
 export class HttpError extends Error {
   status: number;
-  payload: {
-    message: string;
-    [key: string]: any;
-  };
-  constructor({ status, payload }: { status: number; payload: any }) {
+  message: string;
+
+  constructor({ status, message }: { status: number; message: any }) {
     super('Http Error');
     this.status = status;
-    this.payload = payload;
+    this.message = message;
   }
 }
 
 export class EntityError extends HttpError {
-  status: 422;
-  payload: EntityErrorPayload;
-  constructor({
-    status,
-    payload,
-  }: {
-    status: 422;
-    payload: EntityErrorPayload;
-  }) {
-    super({ status, payload });
+  status;
+  message;
+  constructor({ status, message }: EntityErrorPayload) {
+    super({ status, message });
     this.status = status;
-    this.payload = payload;
+    this.message = message;
+  }
+  toJSON() {
+    return {
+      status: this.status,
+      message: this.message,
+    };
   }
 }
 
@@ -66,14 +59,13 @@ const request = async <Response>(
       : {
           'Content-Type': 'application/json',
         };
-  // if (isClient()) {
-  //   const sessionToken = localStorage.getItem('sessionToken');
-  //   if (sessionToken) {
-  //     baseHeaders.Authorization = `Bearer ${sessionToken}`;
-  //   }
-  // }
-  // Nếu không truyền baseUrl (hoặc baseUrl = undefined) thì lấy từ  env.API_ENDPOINT
-  // Nếu truyền baseUrl thì lấy giá trị truyền vào, truyền vào '' thì đồng nghĩa với việc chúng ta gọi API đến Next.js Server
+
+  if (isClient()) {
+    const access_token = options?.access_token;
+    if (access_token) {
+      baseHeaders.Authorization = `Bearer ${access_token}`;
+    }
+  }
   const baseUrl =
     options?.baseUrl === undefined ? env.API_ENDPOINT : options.baseUrl;
 
@@ -92,60 +84,19 @@ const request = async <Response>(
   });
   const payload: Response = await res.json();
 
-  // Interceptor là nơi chúng ta xử lý request và response trước khi trả về cho phía component
-  // if (!res.ok) {
-  //   if (res.status === ENTITY_ERROR_STATUS) {
-  //     throw new EntityError(
-  //       data as {
-  //         status: 422;
-  //         payload: EntityErrorPayload;
-  //       }
-  //     );
-  //   } else if (res.status === AUTHENTICATION_ERROR_STATUS) {
-  //     if (isClient()) {
-  //       if (!clientLogoutRequest) {
-  //         clientLogoutRequest = fetch('/api/auth/logout', {
-  //           method: 'POST',
-  //           body: JSON.stringify({ force: true }),
-  //           headers: {
-  //             ...baseHeaders,
-  //           } as any,
-  //         });
-  //         try {
-  //           await clientLogoutRequest;
-  //         } catch (error) {
-  //         } finally {
-  //           localStorage.removeItem('sessionToken');
-  //           localStorage.removeItem('sessionTokenExpiresAt');
-  //           clientLogoutRequest = null;
-  //           location.href = '/login';
-  //         }
-  //       }
-  //     } else {
-  //       const sessionToken = (options?.headers as any)?.Authorization.split(
-  //         'Bearer '
-  //       )[1];
-  //       redirect(`/logout?sessionToken=${sessionToken}`);
-  //     }
-  //   } else {
-  //     throw new HttpError(data);
-  //   }
-  // }
-  // Đảm bảo logic dưới đây chỉ chạy ở phía client (browser)
-  // if (isClient()) {
-  //   if (
-  //     ['auth/login', 'auth/register'].some(
-  //       (item) => item === normalizePath(url)
-  //     )
-  //   ) {
-  //     const { token, expiresAt } = (payload as LoginResType).data;
-  //     localStorage.setItem('sessionToken', token);
-  //     localStorage.setItem('sessionTokenExpiresAt', expiresAt);
-  //   } else if ('auth/logout' === normalizePath(url)) {
-  //     localStorage.removeItem('sessionToken');
-  //     localStorage.removeItem('sessionTokenExpiresAt');
-  //   }
-  // }
+  if (!res.ok) {
+    const { status, message } = payload as EntityErrorPayload;
+    // if (res.status === NOT_FOUND_STATUS) {
+    //   throw new EntityError({
+    //     status,
+    //     message,
+    //   } as EntityErrorPayload).toJSON();
+    // }
+    throw new EntityError({
+      status,
+      message,
+    } as EntityErrorPayload).toJSON();
+  }
   return payload;
 };
 

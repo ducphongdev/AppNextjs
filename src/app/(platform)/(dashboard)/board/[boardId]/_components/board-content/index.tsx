@@ -180,11 +180,13 @@ function BoardContent({ board }: ListBoardProps) {
         }
         dispatch(
           moveCardToDifferentColumn({
-            currentCardId: activeDraggingCardId,
-            prevColumnId: oldColumnWhenDraggingCard?._id,
-            prevCardOrderIds,
-            nextColumnId: nextOverColumns?._id,
-            nextCardOrderIds,
+            dataUpdate: {
+              currentCardId: activeDraggingCardId,
+              prevColumnId: oldColumnWhenDraggingCard?._id,
+              prevCardOrderIds,
+              nextColumnId: nextOverColumns?._id,
+              nextCardOrderIds,
+            },
           })
         );
       }
@@ -353,7 +355,7 @@ function BoardContent({ board }: ListBoardProps) {
         );
       } else {
         // Hành đồng kéo thả card trong cùng một Column
-        const oldColumnIndex = oldColumnWhenDraggingCard?.cards.findIndex(
+        const oldColumnIndex = oldColumnWhenDraggingCard?.cards?.findIndex(
           (c) => c._id === activeDragItemId
         );
         const newColumnIndex = overColumn?.cards?.findIndex(
@@ -361,7 +363,7 @@ function BoardContent({ board }: ListBoardProps) {
         );
 
         const dndOrderCards: ICard[] = arrayMove(
-          oldColumnWhenDraggingCard?.cards,
+          oldColumnWhenDraggingCard?.cards as ICard[],
           oldColumnIndex,
           newColumnIndex
         );
@@ -392,11 +394,13 @@ function BoardContent({ board }: ListBoardProps) {
 
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
       if (active.id !== over?.id) {
-        const oldColumnIndex = orderColumns.findIndex(
+        const oldColumnIndex = orderColumns?.findIndex(
           (c) => c._id === active.id
         );
 
-        const newColumnIndex = orderColumns.findIndex((c) => c._id === over.id);
+        const newColumnIndex = orderColumns?.findIndex(
+          (c) => c._id === over.id
+        );
 
         // Sắp xếp lại IColumn ban đầu (use ArrayMove)
         const dndOrderedColumns = arrayMove(

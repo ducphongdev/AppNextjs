@@ -3,6 +3,7 @@ import ThemeRedux from '@/lib/ThemeRedux';
 import './globals.css';
 import { QueryProvider } from './QueryProvider';
 import { ConfigProvider } from 'antd';
+import AuthProvider from './AuthProvider';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,13 +16,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning={true}>
+    <html lang="en" className="light" suppressHydrationWarning={true}>
       <body>
-        <QueryProvider>
-          <ThemeRedux>
-            <ConfigProvider theme={{ cssVar: true }}>{children}</ConfigProvider>
-          </ThemeRedux>
-        </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            <ThemeRedux>
+              <ConfigProvider theme={{ cssVar: true }}>
+                {children}
+              </ConfigProvider>
+            </ThemeRedux>
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

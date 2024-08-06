@@ -1,4 +1,6 @@
 'use client';
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import {
   AppIcons,
   BellIcon,
@@ -12,22 +14,39 @@ import Button from '@/components/button';
 import ThemeSwitch from '@/app/ThemeSwitch';
 import Image from '@/components/Image';
 import { useAppSelector } from '@/lib/hooks/useReduxHooks';
+import PopOver from '@/lib/PopOver';
+import AccountMenu from '@/components/AccountMenu';
+import './styles.css';
+import { URL_IMG_DEFAULT } from '@/utils/constants';
+import Link from 'next/link';
+import { routerPath } from '@/config/routers';
+import { IUser } from '@/types/board.type';
 
 function Header() {
-  const user = useAppSelector((state) => state.auth.user);
+  const [isOpen, setIsOpen] = useState(false);
+  const { data: session } = useSession();
+  const user = session?.user as IUser;
+
+  const handleOpenModalAccountMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <nav className="w-full flex items-center border-[1px] border-[hsla(218,54%,19.6%,0.16)] dark:border-[hsla(211,18%,68%,0.16)] border-solid bg-white dark:bg-[#1d2125] p-1">
+    <nav className="w-full flex items-center border-[1px] border-[hsla(218,54%,19.6%,0.16)] dark:border-[hsla(211,18%,68%,0.16)] border-solid bg-white dark:bg-[#1d2125] py-1 px-2">
       <div className="flex justify-center items-center">
         <AppIcons
           className="text-gray-800 dark:text-gray-300"
           width="20"
           height="20"
         />
-        <a className="pl-2 pr-2 cursor-pointer">
+        <Link
+          href={routerPath.organization.name(user?.displayName)}
+          className="pl-2 pr-2 cursor-pointer"
+        >
           <span className="text-gray-600 dark:text-gray-300 text-xl font-extrabold">
             Trello
           </span>
-        </a>
+        </Link>
       </div>
 
       <div className="flex items-center">
@@ -60,14 +79,24 @@ function Header() {
           <QuestionMarkIcon className="w-6 text-gray-600 dark:text-gray-300  hover:text-white" />
         </Button>
 
-        <Button className="ml-2 relative rounded-full">
-          <Image
-            className={'rounded-full'}
-            src={user?.avatar}
-            fallBack="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg"
-            alt="anh user"
-          />
-        </Button>
+        <PopOver
+          content={<AccountMenu user={user} />}
+          open={isOpen}
+          placement="bottomLeft"
+          onChange={(isOpen: boolean) => setIsOpen(isOpen)}
+        >
+          <Button
+            className="ml-2 relative rounded-full"
+            onClick={handleOpenModalAccountMenu}
+          >
+            <Image
+              className={'rounded-full w-6'}
+              src={user?.avatar}
+              fallBack={URL_IMG_DEFAULT}
+              alt="anh user"
+            />
+          </Button>
+        </PopOver>
       </div>
     </nav>
   );

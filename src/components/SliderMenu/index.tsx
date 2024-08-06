@@ -27,15 +27,9 @@ interface IPropsMenu {
 
 function SliderMenu({ handleAddTask }: IPropsMenu) {
   const dispatch = useAppDispatch();
-  // const [isOpenModalAddTask, setIsOpenModalAddTask] = useState(false);
-  // const [isOpenModalTimeCard, setIsOpenModalTimeCard] = useState(false);
   const { isOpenModalTimeCard, isOpenModalAddTask } = useAppSelector(
     (state) => state.modal
   );
-
-  // const taskRef = useClickAway(() => dispatch(toggleModalAddTask(false)));
-  // const handleOpenModalAddTask = () =>
-  // setIsOpenModalAddTask(!isOpenModalAddTask);
 
   return (
     <div className="float-right pl-2 pr-4">

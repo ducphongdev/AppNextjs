@@ -3,43 +3,56 @@ import http from '@/utils/httpRequest';
 
 export const fetchAllBoardOfUser = createAsyncThunk(
   'board/fetchAllBoardOfUser',
-  async (userName: string, thunkApi) => {
-    const response = await http.get(`/v1/boards/member/${userName}`);
+  async (data: any, thunkApi) => {
+    const { userName, access_token } = data;
+    const response = await http.get(`/v1/boards/member/${userName}`, {
+      access_token,
+    });
     return response;
   }
 );
 
 export const fetchBoardById = createAsyncThunk(
   'board/fetchById',
-  async (boardId: string, thunkApi) => {
-    const response = await http.get(`/v1/boards/${boardId}`);
+  async (data: any, thunkApi) => {
+    const { boardId, access_token } = data;
+
+    console.log('🚀 ~ access_token:', access_token);
+    const response = await http.get(`/v1/boards/${boardId}`, {
+      access_token,
+    });
     return response;
   }
 );
 
 export const createBoard = createAsyncThunk(
   'board/createBoard',
-  async (newBoard: any, thunkApi) => {
-    const response = await http.post(`/v1/boards`, newBoard);
+  async (data: any, thunkApi) => {
+    const { newBoard, access_token } = data;
+    const response = await http.post(`/v1/boards`, newBoard, { access_token });
     return response;
   }
 );
 
 export const updateBoardDetails = createAsyncThunk(
   'board/updateBoardDetails',
-  async (infUpdate: any, thunkApi) => {
-    const { boardId, dataUpdate } = infUpdate;
-    const response = await http.put(`/v1/boards/${boardId}`, dataUpdate);
+  async (data: any, thunkApi) => {
+    const { boardId, dataUpdate, access_token } = data;
+    const response = await http.put(`/v1/boards/${boardId}`, dataUpdate, {
+      access_token,
+    });
     return response;
   }
 );
 
 export const moveCardToDifferentColumn = createAsyncThunk(
   'board/moveCardToDifferentColumn',
-  async (updateData: any, thunkApi) => {
+  async (data: any, thunkApi) => {
+    const { dataUpdate, access_token } = data;
     const response = await http.put(
       `/v1/boards/supports/moving_card`,
-      updateData
+      dataUpdate,
+      { access_token }
     );
     return response;
   }

@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { AuthState, IUser } from '@/types/board.type';
-import { loginAuth } from './authThunk';
+import { AuthState } from '@/types/board.type';
+import { loginAuth, logoutAuth } from './authThunk';
+import storage from '@/utils/storage';
 
 const initialState = {
   isLoading: false,
   isError: false,
   messageError: '',
-  user: {},
+  user: storage.get(),
 } as AuthState;
 
 export const authSlice = createSlice({
@@ -21,12 +22,21 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.messageError = '';
-      state.user = payload as IUser;
+      state.user = payload;
+      storage.set(payload);
     });
-    builder.addCase(loginAuth.rejected, (state, action) => {
+    builder.addCase(loginAuth.rejected, (state, { payload }) => {
+      state.isLoading = false;
       state.isError = true;
-      state.messageError = action?.error?.message;
+      state.messageError = payload?.message;
     });
+
+    builder.addCase(logoutAuth.pending, (state) => {});
+    builder.addCase(logoutAuth.fulfilled, (state) => {
+      storage.set(null);
+      state.user = null;
+    });
+    builder.addCase(logoutAuth.rejected, (state) => {});
   },
 });
 

@@ -1,20 +1,24 @@
 'use client';
-import { useState, forwardRef } from 'react';
-import styles from './image.module.scss';
+import { forwardRef } from 'react';
 
-function Image(
-  { src, alt, className, fallBack: customFallBack = null, ...props },
-  ref
-) {
-  return (
-    <img
-      ref={ref}
-      className={className}
-      alt={alt}
-      src={customFallBack || src}
-      {...props}
-    />
-  );
+interface IImage {
+  src: string | undefined;
+  alt: string;
+  className: string;
+  fallBack: string | undefined;
 }
 
-export default forwardRef(Image);
+const Image = forwardRef<HTMLImageElement, IImage>(
+  ({ src, alt, className, fallBack: customFallBack = null, ...props }, ref) => {
+    return (
+      <img
+        ref={ref}
+        className={className}
+        alt={alt}
+        src={src || customFallBack || ''}
+        {...props}
+      />
+    );
+  }
+);
+export default Image;

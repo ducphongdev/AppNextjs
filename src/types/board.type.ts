@@ -64,7 +64,7 @@ export interface IBoard {
 export interface IUser {
   _id: string;
   email: string;
-  disPlayName: string;
+  displayName: string;
   avatar?: string;
   role: 'client' | 'admin';
   isActive: boolean;
@@ -73,6 +73,6 @@ export interface AuthState {
   isLoading: boolean;
   isError: boolean;
   messageError: string | undefined;
-  user: IUser;
+  user: IUser | null;
 }
 export type Items = IColumn | ICard;

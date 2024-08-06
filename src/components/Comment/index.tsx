@@ -1,3 +1,4 @@
+import { URL_IMG_DEFAULT } from '@/utils/constants';
 import Image from '../Image';
 import Button from '../button';
 import { BarsThreeIcon } from '../icons';
@@ -11,7 +12,7 @@ function Comment() {
         </span>
         <h3 className="text-base text-slate-400 ml-2">Hoạt động</h3>
         <div>
-          <Button size="inline" variant="box">
+          <Button size="inline" variant="box" className="text-slate-300">
             Hiện chi tiết
           </Button>
         </div>
@@ -22,7 +23,8 @@ function Comment() {
           <Button className="ml-2 relative hover:rounded-full">
             <Image
               className={'rounded-full'}
-              fallBack="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg"
+              src={undefined}
+              fallBack={URL_IMG_DEFAULT}
               alt="anh user"
             />
           </Button>
